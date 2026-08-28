@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 2.4  
+**Version:** 2.5  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -406,11 +406,12 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 - **Web** (Browser, Desktop & Mobile) — primäres Ziel
 - Optional später: Steam / Desktop-Export
 
-### 11.2 Tech-Stack (Vorschlag)
+### 11.2 Tech-Stack
 
-- **Engine / Framework:** Phaser 3 + TypeScript
-- **Build:** Vite
-- **Deployment:** GitHub Pages / statisches Hosting
+- **Engine:** Godot 4 (GDScript)
+- **Grafik:** 2D Pixel-Art / Tilemaps, Parallax-Hintergründe
+- **Zielplattformen:** Desktop (Windows, Linux, macOS), optional Web-Export
+- **Deployment:** GitHub Releases / itch.io
 
 ### 11.3 MVP-Umfang (Version 0.1)
 
@@ -484,6 +485,26 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | Level — Gipfel (Finale) | ![Gipfel](docs/design/design-level-gipfel.png) | `design-level-gipfel.png` |
 | Hafen — Übergang Japan→Westen | ![Übergang](docs/design/design-hafen-uebergang-japan.png) | `design-hafen-uebergang-japan.png` |
 | Querschnitt — Checkpoint & Boss | ![Checkpoint Boss](docs/design/design-querschnitt-checkpoint-boss.png) | `design-querschnitt-checkpoint-boss.png` |
+
+### 14.0b In-Game Grafiken (Godot) — Übersicht
+
+> Pixel-Art-Screenshots im Godot-2D-Stil — Ziellook für Tilemaps, Sprites und HUD.
+
+| Szene | Bild | Datei |
+|-------|------|-------|
+| Level — Nebliger Wald | ![In-Game Wald](docs/design/ingame/ingame-level-wald-godot.png) | `ingame-level-wald-godot.png` |
+| Kampf — Nahkampf | ![In-Game Kampf](docs/design/ingame/ingame-combat-nahkampf-godot.png) | `ingame-combat-nahkampf-godot.png` |
+| Mechanik — Shuriken-Falle | ![In-Game Falle](docs/design/ingame/ingame-mechanik-shuriken-falle-godot.png) | `ingame-mechanik-shuriken-falle-godot.png` |
+| Level — Dächer Kyoto | ![In-Game Kyoto](docs/design/ingame/ingame-level-daecher-kyoto-godot.png) | `ingame-level-daecher-kyoto-godot.png` |
+| Level — Neon-Dächer NY | ![In-Game Neon](docs/design/ingame/ingame-level-neon-daecher-godot.png) | `ingame-level-neon-daecher-godot.png` |
+| Level — Chinatown | ![In-Game Chinatown](docs/design/ingame/ingame-level-chinatown-godot.png) | `ingame-level-chinatown-godot.png` |
+| Level — U-Bahn | ![In-Game U-Bahn](docs/design/ingame/ingame-level-u-bahn-godot.png) | `ingame-level-u-bahn-godot.png` |
+| Level — Hafen im Sturm | ![In-Game Hafen](docs/design/ingame/ingame-level-hafen-godot.png) | `ingame-level-hafen-godot.png` |
+| Level — Schiff | ![In-Game Schiff](docs/design/ingame/ingame-level-schiff-godot.png) | `ingame-level-schiff-godot.png` |
+| Boss — Tempel-Wächter | ![In-Game Boss Tempel](docs/design/ingame/ingame-boss-tempel-waechter-godot.png) | `ingame-boss-tempel-waechter-godot.png` |
+| Boss — Finale Gipfel | ![In-Game Boss Finale](docs/design/ingame/ingame-boss-finale-gipfel-godot.png) | `ingame-boss-finale-gipfel-godot.png` |
+| HUD / UI | ![In-Game HUD](docs/design/ingame/ingame-hud-ui-godot.png) | `ingame-hud-ui-godot.png` |
+| Cutscene — Pause | ![In-Game Cutscene](docs/design/ingame/ingame-cutscene-pause-godot.png) | `ingame-cutscene-pause-godot.png` |
 
 ### 14.1 Spieldesign — 5 Vorschläge
 
