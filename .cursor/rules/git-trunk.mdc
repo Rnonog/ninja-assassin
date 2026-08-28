@@ -1,0 +1,19 @@
+---
+description: Pro Aufgabe eigener Git-Worktree, Rebase auf origin/main, Push direkt auf main.
+alwaysApply: true
+---
+
+# Git Trunk
+
+Remote: GitHub `origin`. Branch: `main`. Kein GitLab, kein `master`.
+
+Pro Aufgabe eigener Worktree, damit `main` im Haupt-Checkout frei bleibt:
+
+1. `git fetch origin`
+2. `git worktree add -b task/<slug> .worktrees/<slug> origin/main`
+3. Nur im Worktree arbeiten
+4. Vor dem Commit: `git fetch origin && git rebase origin/main`
+5. Commit, dann `git push origin HEAD:main`
+6. Worktree danach entfernen
+
+Kein force-push auf `main`. Details: [`.cursor/skills/git-trunk/SKILL.md`](../skills/git-trunk/SKILL.md).
