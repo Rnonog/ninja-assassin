@@ -22,6 +22,8 @@ Orchestration: [`.cursor/skills/dev-workflow/SKILL.md`](../skills/dev-workflow/S
 
 Kleine Aufgaben: ein Slice reicht (kein künstliches Splitting).
 
+Mehrphasige Vorhaben: im übergeordneten Plan (INDEX, Konzept-Roadmap, Cursor-Plan, Canvas) nach jeder Phase den Status markieren (`offen` / `in Umsetzung` / `erledigt`). Beim Start `in Umsetzung`, nach Playtest und Push `erledigt`, bevor die nächste Phase beginnt.
+
 ## Bug
 
 1. `task-slicer` → INDEX + Bug-Stub

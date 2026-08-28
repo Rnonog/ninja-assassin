@@ -77,6 +77,15 @@ else
   echo "OK: nur dev-workflow und git-trunk"
 fi
 
+echo "=== Mehrphasiger Fortschritt ==="
+if grep -qi 'mehrphasig' "$root/.cursor/skills/dev-workflow/SKILL.md" \
+  && grep -qi 'mehrphasig' "$root/.cursor/rules/dev-workflow.mdc"; then
+  echo "OK: mehrphasiger Fortschritt in Skill und Regel"
+else
+  echo "MISSING: mehrphasiger Fortschritt in Skill oder Regel"
+  missing=1
+fi
+
 echo "=== alwaysApply ==="
 for rel in ".cursor/rules/dev-workflow.mdc" ".cursor/rules/git-trunk.mdc"; do
   if grep -q 'alwaysApply: true' "$root/$rel"; then

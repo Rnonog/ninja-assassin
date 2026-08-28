@@ -38,3 +38,15 @@ Implementierung nur nach User-Freigabe der Plan-Dateien unter `docs/plans/<aufga
 6. Regressionstests für das verbesserte Verhalten.
 
 Templates: `docs/plans/_templates/`.
+
+## Mehrphasige Vorhaben
+
+Wenn ein Vorhaben mehrere Phasen oder Stufen hat (z. B. MVP in KONZEPT §12.1):
+
+1. Im **übergeordneten Plan** eine Fortschrittstabelle führen (Phase, Plan-Ordner, Status).
+2. Status: `offen` | `in Umsetzung` | `erledigt`.
+3. Beim Start einer Phase: Status auf `in Umsetzung` setzen.
+4. Nach Abschluss (Tests grün, Review, Playtest, Push): Status auf `erledigt` setzen, **bevor** die nächste Phase beginnt.
+5. Dieselbe Markierung in allen Kopien des Plans halten: `docs/plans/`, Konzept-Roadmap, Cursor-Plan, Canvas.
+
+Nicht umgesetzte Phasen bleiben sichtbar als `offen`. Keine Phase als erledigt markieren, nur weil Code existiert — erst nach Playtest und Push.

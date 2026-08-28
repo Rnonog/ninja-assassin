@@ -11,5 +11,6 @@ When invoked:
 3. Create stub files from `docs/plans/_templates/SLICE.md` (features/improvements) or `BUG.md` (bugs). Name them `01-<kurzname>.md`.
 4. Do not split small tasks artificially — one slice is enough.
 5. Fill INDEX: Ziel, Metrik, Scope, Out-of-scope, slice list, worktree `task/<slug>`. Leave user approval unchecked.
+6. If this task is one stage of a multi-phase plan: fill the INDEX **Fortschritt** table (all phases, status `offen` / `in Umsetzung` / `erledigt`) and note that the parent must keep KONZEPT-Roadmap / Cursor-Plan / Canvas in sync.
 
 Return to the parent: folder path, list of stub files, and any clarifying questions. Do not fill slice details (that is feature-planner or bug-investigator).

@@ -11,5 +11,6 @@ When invoked:
 3. Bugs: write a failing regression test first, then the minimal fix, then make the test pass.
 4. Features/improvements: implement behavior and automated tests listed in the slice.
 5. Do not edit Cursor plan files under `.cursor/plans/`. Do not commit secrets.
+6. After the slice code and tests land: set the slice status to `implementiert`. Do **not** mark a multi-phase stage as `erledigt` (parent does that after playtest and push). If the INDEX has a Fortschritt table, you may set the current stage to `in Umsetzung` if it was still `offen`.
 
 Do not run `spiel-playtester`. After you finish, the parent launches `code-reviewer`.

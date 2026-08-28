@@ -26,6 +26,14 @@ Woran ist Erfolg messbar (Test, In-Game-Check, Datei existiert, …)?
 |-------|--------|--------|
 | `01-….md` | … | Stub / geplant / freigegeben / erledigt |
 
+## Fortschritt (nur mehrphasig)
+
+Wenn diese Aufgabe eine Stufe eines größeren Vorhabens ist, Status aller Phasen hier (und in der Roadmap) führen:
+
+| Phase | Plan | Status |
+|-------|------|--------|
+| … | `docs/plans/…/` | offen / in Umsetzung / erledigt |
+
 ## Freigabe
 
 - [ ] User hat INDEX und Slice-Dateien freigegeben

@@ -454,14 +454,16 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 
 **Regel:** Jede Stufe endet spielbar. Feel vor Content, Loop vor Politur. Platzhalter-Art bis Stufe 6. Jede Stufe ist eine eigene Plan-Aufgabe (INDEX + Slices → Freigabe → Implementer → Review → Playtest).
 
-| Stufe | Name | Spieler kann danach | Fertig wenn |
-|-------|------|---------------------|-------------|
-| **1** | Steuerung & Greybox | Laufen, springen, ausweichen | Steuerung fühlt sich unmittelbar an; Szene startet ohne Fehler |
-| **2** | Nahkampf & Leben | Mit Katana treffen und sterben | Leicht/schwer unterscheidbar; Tod bei 0 HP |
-| **3** | Fernkampf & Gegner | Wurfsterne + Schläger + Wurfkämpfer | Munition begrenzt; beide Muster lesbar |
-| **4** | Level *Nebliger Wald* | Von links nach rechts bis zur Arena | 1 Checkpoint, Respawn, 5–10 Min. |
-| **5** | Boss, Sieg, Intro | Hauptmann besiegen, Intro skippen | Spielschleife geschlossen |
-| **6** | Atmosphäre, HUD, Export | Düsteres Level im Browser | Alle Punkte aus §11.3 abgehakt |
+**Fortschritt:** Nach jeder Stufe Status in dieser Tabelle aktualisieren (`offen` / `in Umsetzung` / `erledigt`). `erledigt` erst nach Playtest und Push.
+
+| Stufe | Name | Status | Spieler kann danach | Fertig wenn |
+|-------|------|--------|---------------------|-------------|
+| **1** | Steuerung & Greybox | **erledigt** | Laufen, springen, ausweichen | Steuerung fühlt sich unmittelbar an; Szene startet ohne Fehler |
+| **2** | Nahkampf & Leben | offen | Mit Katana treffen und sterben | Leicht/schwer unterscheidbar; Tod bei 0 HP |
+| **3** | Fernkampf & Gegner | offen | Wurfsterne + Schläger + Wurfkämpfer | Munition begrenzt; beide Muster lesbar |
+| **4** | Level *Nebliger Wald* | offen | Von links nach rechts bis zur Arena | 1 Checkpoint, Respawn, 5–10 Min. |
+| **5** | Boss, Sieg, Intro | offen | Hauptmann besiegen, Intro skippen | Spielschleife geschlossen |
+| **6** | Atmosphäre, HUD, Export | offen | Düsteres Level im Browser | Alle Punkte aus §11.3 abgehakt |
 
 **Stufe 1 — Steuerung & Greybox**
 - Godot 4 Projekt, Szenenbaum (Main / Player / Level), Input Map laut §8.1

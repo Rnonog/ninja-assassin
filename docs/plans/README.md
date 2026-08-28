@@ -11,6 +11,8 @@ Jeder Task (Feature, Bug, Verbesserung) hat einen Ordner `docs/plans/<aufgabe>/`
 
 Kleine Aufgaben: ein Slice reicht.
 
+Mehrphasige Vorhaben: Fortschrittstabelle im übergeordneten Plan (`offen` / `in Umsetzung` / `erledigt`). Nach abgeschlossener Phase (Playtest + Push) markieren, bevor die nächste startet.
+
 Orchestration: Skill `dev-workflow`. Git: Skill `git-trunk` und Regel `.cursor/rules/git-trunk.mdc`.
 
 ## Dateien
