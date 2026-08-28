@@ -65,6 +65,14 @@ pause={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_2="player"
+2d_physics/layer_3="dummy"
+2d_physics/layer_4="player_hitbox"
+2d_physics/layer_5="dummy_hitbox"
+
 [physics]
 
 2d/default_gravity=980.0

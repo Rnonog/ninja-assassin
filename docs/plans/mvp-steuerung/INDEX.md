@@ -49,7 +49,7 @@ Spieler kann laufen, springen und ausweichen auf einer Greybox-Teststrecke. Godo
 | Stufe | Name | Plan | Status |
 |-------|------|------|--------|
 | 1 | Steuerung & Greybox | `docs/plans/mvp-steuerung/` | erledigt |
-| 2 | Nahkampf & Leben | — | offen |
+| 2 | Nahkampf & Leben | `docs/plans/mvp-nahkampf/` | erledigt |
 | 3 | Fernkampf & Gegner | — | offen |
 | 4 | Level Nebliger Wald | — | offen |
 | 5 | Boss, Sieg, Intro | — | offen |

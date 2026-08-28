@@ -1,6 +1,8 @@
 extends SceneTree
 
 const PlayerGD := preload("res://scripts/player.gd")
+const DummyGD := preload("res://scripts/dummy.gd")
+const HealthGD := preload("res://scripts/health.gd")
 
 const ACTIONS := [
 	"move_left",
@@ -37,6 +39,17 @@ func _run_all() -> void:
 	await _test_jump_buffer()
 	await _test_variable_height()
 	await _test_dodge_iframes()
+	await _test_player_starts_at_max_hp()
+	await _test_no_hp_regen()
+	await _test_light_hits_dummy()
+	await _test_heavy_hits_dummy()
+	await _test_dummy_swipe_damages_player()
+	await _test_second_dummy_swipe_damages_again()
+	await _test_dummy_swipe_hits_adjacent_player()
+	await _test_dodge_blocks_dummy_swipe()
+	await _test_death_stops_move_and_attack()
+	if PlayerGD.COMBO_ENABLED:
+		await _test_combo_light_light_heavy()
 
 
 func _check(test_name: String, ok: bool, detail: String = "") -> void:
@@ -300,4 +313,232 @@ func _test_dodge_iframes() -> void:
 	var wait_frames := int(ceil(PlayerGD.IFRAME_DURATION * float(ticks))) + 3
 	await _step_physics(wait_frames)
 	_check("dodge_iframes", not player.invulnerable, "still invulnerable after i-frames")
+	_teardown(world)
+
+
+func _frames_for(seconds: float) -> int:
+	return int(ceil(seconds * float(Engine.physics_ticks_per_second))) + 2
+
+
+func _spawn_combat_player(world: Node, pos: Vector2):
+	var packed: PackedScene = load("res://scenes/player.tscn")
+	var player = packed.instantiate()
+	player.position = pos
+	player.set_move_axis(0.0)
+	world.add_child(player)
+	return player
+
+
+func _spawn_combat_dummy(world: Node, pos: Vector2):
+	var packed: PackedScene = load("res://scenes/dummy.tscn")
+	var dummy = packed.instantiate()
+	dummy.auto_loop = false
+	dummy.position = pos
+	world.add_child(dummy)
+	return dummy
+
+
+func _test_player_starts_at_max_hp() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	_check(
+		"player_starts_at_max_hp",
+		player.health != null and player.health.current == HealthGD.MAX_HP,
+		"hp=%s" % (player.health.current if player.health else -1)
+	)
+	_teardown(world)
+
+
+func _test_no_hp_regen() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	player.health.take_damage(HealthGD.LIGHT_DAMAGE)
+	var after_hit: int = player.health.current
+	await _step_physics(20)
+	_check(
+		"no_hp_regen",
+		player.health.current == after_hit,
+		"hp %s -> %s" % [after_hit, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_light_hits_dummy() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var dummy = _spawn_combat_dummy(world, Vector2(36, 158))
+	await _step_physics(3)
+	var start_hp: int = dummy.health.current
+	player.facing = 1
+	player.request_attack_light()
+	await _step_physics(_frames_for(PlayerGD.LIGHT_WINDUP + PlayerGD.LIGHT_ACTIVE))
+	_check(
+		"light_hits_dummy",
+		dummy.health.current == start_hp - HealthGD.LIGHT_DAMAGE,
+		"hp %s -> %s (expected %s)" % [start_hp, dummy.health.current, start_hp - HealthGD.LIGHT_DAMAGE]
+	)
+	_teardown(world)
+
+
+func _test_heavy_hits_dummy() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var dummy = _spawn_combat_dummy(world, Vector2(36, 158))
+	await _step_physics(3)
+	var start_hp: int = dummy.health.current
+	player.facing = 1
+	player.request_attack_heavy()
+	await _step_physics(_frames_for(PlayerGD.HEAVY_WINDUP + PlayerGD.HEAVY_ACTIVE))
+	var dropped: int = start_hp - dummy.health.current
+	_check(
+		"heavy_hits_dummy",
+		dropped == HealthGD.HEAVY_DAMAGE and HealthGD.HEAVY_DAMAGE != HealthGD.LIGHT_DAMAGE,
+		"hp %s -> %s dropped=%s" % [start_hp, dummy.health.current, dropped]
+	)
+	_teardown(world)
+
+
+func _test_dummy_swipe_damages_player() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var dummy = _spawn_combat_dummy(world, Vector2(40, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	dummy.request_swipe()
+	await _step_physics(_frames_for(DummyGD.DUMMY_TELEGRAPH + DummyGD.DUMMY_ACTIVE))
+	_check(
+		"dummy_swipe_damages_player",
+		player.health.current == start_hp - HealthGD.DUMMY_DAMAGE,
+		"hp %s -> %s" % [start_hp, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_second_dummy_swipe_damages_again() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var dummy = _spawn_combat_dummy(world, Vector2(40, 158))
+	await _step_physics(3)
+	dummy.request_swipe()
+	await _step_physics(_frames_for(DummyGD.DUMMY_TELEGRAPH + DummyGD.DUMMY_ACTIVE))
+	var after_first: int = player.health.current
+	if after_first != HealthGD.MAX_HP - HealthGD.DUMMY_DAMAGE:
+		_check(
+			"second_dummy_swipe_damages_again",
+			false,
+			"first swipe did not land hp=%s" % after_first
+		)
+		_teardown(world)
+		return
+	dummy.request_swipe()
+	await _step_physics(_frames_for(DummyGD.DUMMY_TELEGRAPH + DummyGD.DUMMY_ACTIVE))
+	_check(
+		"second_dummy_swipe_damages_again",
+		player.health.current == after_first - HealthGD.DUMMY_DAMAGE,
+		"hp after first=%s after second=%s" % [after_first, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_dummy_swipe_hits_adjacent_player() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var dummy = _spawn_combat_dummy(world, Vector2(40, 158))
+	var player = _spawn_combat_player(world, Vector2(40, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	dummy.request_swipe()
+	await _step_physics(_frames_for(DummyGD.DUMMY_TELEGRAPH + DummyGD.DUMMY_ACTIVE))
+	_check(
+		"dummy_swipe_hits_adjacent_player",
+		player.health.current == start_hp - HealthGD.DUMMY_DAMAGE,
+		"standing on dummy hp %s -> %s" % [start_hp, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_dodge_blocks_dummy_swipe() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var dummy = _spawn_combat_dummy(world, Vector2(40, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	dummy.request_swipe()
+	var telegraph_frames := maxi(int(floor(DummyGD.DUMMY_TELEGRAPH * float(Engine.physics_ticks_per_second))) - 1, 1)
+	await _step_physics(telegraph_frames)
+	player.request_dodge()
+	await _step_physics(_frames_for(DummyGD.DUMMY_ACTIVE + 0.05))
+	_check(
+		"dodge_blocks_dummy_swipe",
+		player.health.current == start_hp,
+		"hp %s -> %s invulnerable=%s" % [start_hp, player.health.current, player.invulnerable]
+	)
+	_teardown(world)
+
+
+func _test_death_stops_move_and_attack() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	player.health.take_damage(HealthGD.MAX_HP)
+	await physics_frame
+	if not player.is_dead:
+		_check("death_stops_move_and_attack", false, "is_dead was false after MAX_HP damage")
+		_teardown(world)
+		return
+	player.set_move_axis(1.0)
+	player.request_attack_light()
+	await _step_physics(4)
+	_check(
+		"death_stops_move_and_attack",
+		is_equal_approx(player.velocity.x, 0.0)
+		and player.attack_kind == PlayerGD.AttackKind.NONE,
+		"vx=%s attack=%s" % [player.velocity.x, player.attack_kind]
+	)
+	_teardown(world)
+
+
+func _test_combo_light_light_heavy() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	player.request_attack_light()
+	await _step_physics(_frames_for(PlayerGD.LIGHT_WINDUP + PlayerGD.LIGHT_ACTIVE))
+	if player.attack_phase != PlayerGD.AttackPhase.RECOVERY:
+		_check("combo_light_light_heavy", false, "not in recovery after first light")
+		_teardown(world)
+		return
+	player.request_attack_light()
+	if player.attack_kind != PlayerGD.AttackKind.LIGHT or player.attack_phase == PlayerGD.AttackPhase.RECOVERY:
+		_check(
+			"combo_light_light_heavy",
+			false,
+			"second light did not cancel recovery kind=%s phase=%s" % [player.attack_kind, player.attack_phase]
+		)
+		_teardown(world)
+		return
+	await _step_physics(_frames_for(PlayerGD.LIGHT_WINDUP + PlayerGD.LIGHT_ACTIVE))
+	player.request_attack_heavy()
+	_check(
+		"combo_light_light_heavy",
+		player.attack_kind == PlayerGD.AttackKind.HEAVY,
+		"kind=%s phase=%s" % [player.attack_kind, player.attack_phase]
+	)
 	_teardown(world)

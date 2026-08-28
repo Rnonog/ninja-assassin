@@ -459,7 +459,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | Stufe | Name | Status | Spieler kann danach | Fertig wenn |
 |-------|------|--------|---------------------|-------------|
 | **1** | Steuerung & Greybox | **erledigt** | Laufen, springen, ausweichen | Steuerung fühlt sich unmittelbar an; Szene startet ohne Fehler |
-| **2** | Nahkampf & Leben | offen | Mit Katana treffen und sterben | Leicht/schwer unterscheidbar; Tod bei 0 HP |
+| **2** | Nahkampf & Leben | **erledigt** | Mit Katana treffen und sterben | Leicht/schwer unterscheidbar; Tod bei 0 HP |
 | **3** | Fernkampf & Gegner | offen | Wurfsterne + Schläger + Wurfkämpfer | Munition begrenzt; beide Muster lesbar |
 | **4** | Level *Nebliger Wald* | offen | Von links nach rechts bis zur Arena | 1 Checkpoint, Respawn, 5–10 Min. |
 | **5** | Boss, Sieg, Intro | offen | Hauptmann besiegen, Intro skippen | Spielschleife geschlossen |
