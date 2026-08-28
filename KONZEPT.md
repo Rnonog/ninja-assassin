@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 2.1  
+**Version:** 2.2  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -9,7 +9,7 @@
 
 ## 1. Elevator Pitch
 
-*Ninja Assassin* ist ein düsteres 2D-Action-Spiel aus der Seitenansicht. Ein einsamer Shinobi kämpft sich von seiner Heimat in Japan bis in die Neon-Schatten von New York — Level für Level, Gegner für Gegner, Boss für Boss. Katana gegen Katana, Wurfstern gegen Wurfstern.
+*Ninja Assassin* ist ein düsteres 2D-Action-Spiel aus der Seitenansicht. Ein einsamer Shinobi kämpft sich von seiner Heimat in Japan bis in die Neon-Schatten von New York — Level für Level, Gegner für Gegner, Boss für Boss. Katana und Wurfsterne gegen ein Arsenal aus Messern, Äxten, Bögen und Schusswaffen.
 
 > **Kurzform:** Ein Pfad. Zwei Welten. Kein Entkommen — nur Vorwärts.
 
@@ -34,7 +34,8 @@ Der Spieler erlebt die brutale Odyssee eines Ninja, der alles verloren hat und n
 | **Reise von Ost nach West** | Einzigartiger visueller und atmosphärischer Wandel von feudalem Japan bis zu modernem New York |
 | **Düstere Ästhetik** | Gedämpfte Farben, harte Schatten, Regen, Nebel — kein helles Abenteuer |
 | **Boss nach jedem Level** | Jeder Abschnitt endet mit einem stärkeren Endboss — klarer Schwierigkeitsanstieg |
-| **Symmetrischer Kampf** | Gegner nutzen dieselben Waffen wie der Spieler — Katana und Wurfsterne |
+| **Vielfältiges Waffen-Arsenal** | Gegner nutzen je nach Region und Typ unterschiedliche Waffen — von Messer und Axt bis Pistole und Gewehr; der Ninja bleibt mit Katana und Wurfsternen unterlegen, muss aber clever kämpfen |
+| **Waffen lesbar im Kampf** | Jede Gegnerwaffe hat ein erkennbares Angriffsmuster — der Spieler lernt, wie er gegen jede Bedrohung reagiert |
 
 ---
 
@@ -128,26 +129,99 @@ Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endbo
 - Geringerer Schaden als Katana, aber sicherer Abstand
 - Können Wurfangriffe der Gegner unterbrechen
 
-### 5.3 Kampfsystem
+#### Rauchbombe (Situativ, begrenzt)
+
+- **1–2 pro Level** als Pickup — kein Upgrade, nur taktische Hilfe
+- Erzeugt eine Rauchwolke, die **Sichtlinien blockiert** (Gegner verlieren kurz den Anblick)
+- Nützlich gegen Schützen und in Boss-Phasen zum Repositionieren
+- Passt zur düsteren Ninja-Ästhetik — kein greller Effekt, nur aufsteigender schwarzer Nebel
+
+#### Kettenhaken (Level-Mechanik)
+
+- Keine Kampfwaffe — nur in markierten Abschnitten einsetzbar (Dächer, Hafen, NY)
+- Zieht den Ninja zu Hakenspitzen oder senkrechten Wänden
+- Erweitert Level-Navigation ohne den festen Charakter zu verändern
+
+### 5.3 Waffen-Arsenal — Übersicht
+
+#### Waffen des Ninja (fest)
+
+| Waffe | Typ | Rolle |
+|-------|-----|-------|
+| **Katana** | Nahkampf | Hauptwaffe — Combos, Block-Break |
+| **Wurfsterne** | Fernkampf | Distanz, Unterbrechung, begrenzte Munition |
+| **Rauchbombe** | Taktik | Ablenkung, Deckung, Flucht |
+
+#### Gegnerwaffen nach Region
+
+**Japan — traditionell & Klan-Waffen**
+
+| Waffe | Gegnertyp | Kampfverhalten |
+|-------|-----------|----------------|
+| **Messer** | Klan-Schläger | Schnelle Stiche, kurze Reichweite |
+| **Axt** | Holzfäller / Klan-Vollstrecker | Langsamer Wind-up, hoher Schaden, kann Boden rütteln |
+| **Wurfaxt** | Wald-Jäger | Geworfen, bleibt kurz im Boden stecken — Ausweichen nötig |
+| **Katana** | Katana-Krieger, Schatten-Ninja | Block, Combos |
+| **Wurfsterne** | Wurfkämpfer | Fernkampf aus sicherer Distanz |
+| **Bogen** | Bogenschütze | Pfeile von erhöhter Position |
+| **Naginata** | Tempel-Wächter | Längere Reichweite als Katana — Haltungskampf |
+| **Nunchaku** | Straßenkämpfer (Japan) | Schnelle Schläge, schwer ausweichbar |
+| **Kette & Eisenkugel** | Hafen-Meister (Boss) | Mittlere Reichweite, umschlingt bei Treffer kurz |
+
+**Übergang — Schiff & Hafen**
+
+| Waffe | Gegnertyp | Kampfverhalten |
+|-------|-----------|----------------|
+| **Säbel (Cutlass)** | Schiffskapitän, Piraten | Breite Schwünge auf engem Deck |
+| **Harpune** | Deck-Arbeiter | Langsame Projektile, hoher Schaden |
+| **Flintlock-Pistole** | Schiffsoffizier | Ein Schuss, langes Nachladen — telegraphiert |
+
+**New York — modern & urban**
+
+| Waffe | Gegnertyp | Kampfverhalten |
+|-------|-----------|----------------|
+| **Pistole** | Gangmitglied, Zoll-Wächter | Mittlere Reichweite, schnelle Schüsse |
+| **Revolver** | Chinatown-Boss | 6 Schuss-Salve, dann Pause |
+| **Sturmgewehr** | Klan-Söldner | Dauerfeuer — Deckung oder Ausweichen zwingend |
+| **Schrotflinte** | U-Bahn-Jäger | Kurze Reichweite, extrem hoher Schaden |
+| **Sniper-Gewehr** | Dach-Sniper | Sehr lange Reichweite, roter Laser als Warnung |
+| **Baseballschläger** | Straßen-Krieger | Nahkampf, kann Ninja zurückschleudern |
+| **Dual Karambit** | Chinatown-Assassine | Doppel-Klingen, schnelle Combo-Stiche |
+| **Elektroschocker** | NY-Security | Kurzer Stun bei Treffer (~1 Sekunde) |
+| **Molotow-Cocktail** | Straßenschläger | Flächenschaden am Boden, brennt 3 Sekunden |
+| **Gasgranate** | U-Bahn-Spezialist | Reduziert Sichtfeld des Spielers kurzzeitig |
+
+#### Eigene Waffen-Ideen (designspezifisch)
+
+| Waffe | Konzept | Gameplay-Idee |
+|-------|---------|---------------|
+| **Shuriken-Falle** | Gegner legt Bodenfallen | Leuchtet schwach — Ninja muss springen oder ausweichen |
+| **Fackel-Werfer** | Tempel-Wächter (Phase 2) | Erhellt Arena, verbrennt Rauchbombe sofort |
+| **Kettensäge** | Wall-Street-Minion | Laut, langsam, hoher Schaden — akustische Warnung |
+| **Armbrust (schwer)** | Dach-Elite | Durchdringender Bolzen — blockt nicht, nur Ausweichen |
+| **Dual-Pistolen** | Klan-Elite (Boss Phase 1) | Akimbo-Schüsse in wechselnden Mustern |
+| **Ninjato (gebrochene Klinge)** | Anführer des Schwarzen Klans | Finaler Boss — schnellere Combos als Spieler-Katana |
+
+### 5.4 Kampfsystem
 
 ```
 Nahkampf:  Leichter Hieb → Leichter Hieb → Schwerer Hieb (Combo)
 Fernkampf: Wurfstern (begrenzte Munition)
-Defensive: Ausweichen (i-Frames), Blocken (reduziert Schaden, kurze Erholung)
+Defensive: Ausweichen (i-Frames), Blocken (reduziert Schaden, kurze Erholung — schwach gegen Schrotflinte/Gewehr)
 ```
 
 - **Treffer-Feedback:** Bildschirm-Shake, kurzer Freeze-Frame bei kritischen Treffern
 - **Gegner-Reaktion:** Gegner taumeln bei starken Hieben, Elite-Gegner können blocken
 
-### 5.4 Leben & Schaden
+### 5.5 Leben & Schaden
 
 - **Lebenspunkte:** Fester Wert von **100 HP** — keine Upgrades, keine permanente Steigerung
 - **Keine Regeneration:** HP regenerieren sich nicht automatisch
 - **Heilung:** Seltener Pickup im Level (Medizin-Rolle / Erste-Hilfe-Kit, +30 HP)
-- **Schaden:** Abhängig von Gegnertyp und Angriffsart (Schläger ~10 HP, Boss ~25 HP pro Treffer)
+- **Schaden:** Abhängig von Waffe und Gegnertyp (Messer ~10 HP, Axt ~20 HP, Schusswaffen ~15–30 HP, Boss ~25 HP pro Treffer)
 - **Tod:** Respawn am letzten Checkpoint mit vollem Leben
 
-### 5.5 Fester Charakter — keine Upgrades
+### 5.6 Fester Charakter — keine Upgrades
 
 Der Ninja ist von Anfang bis Ende **statisch** — keine sammelbaren Verbesserungen.
 
@@ -156,6 +230,7 @@ Der Ninja ist von Anfang bis Ende **statisch** — keine sammelbaren Verbesserun
 | 100 HP | HP-Upgrades |
 | Katana (leicht + schwer) | Waffen-Upgrades |
 | Wurfsterne (begrenzt pro Level) | Permanente Munitions-Erhöhung |
+| Rauchbombe (1–2 Pickups pro Level) | Zusätzliche Waffen freischalten |
 | Feste Combo-Kette | Skill-Bäume |
 | Ausweichen mit i-Frames | Cooldown-Reduktionen |
 
@@ -206,34 +281,42 @@ Schwierigkeitssteigerung entsteht ausschließlich durch **härtere Level, stärk
 
 ### 7.1 Standard-Gegnertypen
 
-| Typ | Waffe | Verhalten | Vorkommen |
-|-----|-------|-----------|-----------|
-| **Klan-Schläger** | Faust / Messer | Rennt auf Spieler zu, einfache Angriffe | Japan, frühe Level |
-| **Wurfkämpfer** | Wurfsterne | Hält Abstand, wirft aus der Ferne | Ab Level 2 |
+| Typ | Waffe(n) | Verhalten | Vorkommen |
+|-----|----------|-----------|-----------|
+| **Klan-Schläger** | Messer, Faust | Rennt auf Spieler zu, schnelle Stiche | Japan, frühe Level |
+| **Axt-Kämpfer** | Axt | Langsamer, schwerer Hieb, hoher Schaden | Japan — Wald, Dorf |
+| **Wurfkämpfer** | Wurfsterne, Wurfaxt | Hält Abstand, wirft aus der Ferne | Ab Level 2 |
 | **Katana-Krieger** | Katana | Blockt, führt Combos aus | Ab Level 3 |
-| **Bogenschütze** | Bogen (Fernkampf) | Plattform-Position, schießt von oben | Wälder, Dächer |
+| **Bogenschütze** | Bogen | Plattform-Position, schießt von oben | Wälder, Dächer |
+| **Naginata-Wächter** | Naginata | Längere Reichweite, hält Position | Tempel, Level 2 |
 | **Schatten-Ninja** | Katana + Wurfsterne | Teleportiert kurz, kombiniert Nah- und Fernkampf | Ab Level 5 |
-| **Sniper** | Langstrecken-Wurfsterne | Sehr hohe Plattform, präzise Schüsse | NY-Dächer |
-| **Elite-Wache** | Katana (schwer) | Hohe HP, langsame aber verheerende Hiebe | Späte Level |
+| **Deck-Matrose** | Harpune, Cutlass | Enger Nahkampf auf Plattformen | Schiff, Level 6 |
+| **Gangmitglied** | Pistole, Baseballschläger | Schießt oder schlägt im Wechsel | NY — ab Level 7 |
+| **Klan-Söldner** | Sturmgewehr | Dauerfeuer, sucht Deckung | NY — Straßen, ab Level 8 |
+| **Chinatown-Assassine** | Dual Karambit | Sehr schnelle Combos, niedrige HP | NY — Chinatown |
+| **Sniper** | Sniper-Gewehr | Sehr hohe Plattform, roter Laser vor Schuss | NY-Dächer |
+| **U-Bahn-Jäger** | Schrotflinte, Gasgranate | Lauert in Dunkelheit, Flächenangriffe | NY — Untergrund |
+| **NY-Security** | Elektroschocker, Pistole | Stun + Nahkampf | NY — Wall Street |
+| **Elite-Wache** | Katana (schwer) oder Sturmgewehr | Hohe HP, langsam aber verheerend | Späte Level |
 
 ### 7.2 Endbosse
 
 Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr Angriffsmuster, eigene Arena.
 
-| Level | Boss | Besonderheit |
-|-------|------|--------------|
-| 1 | **Klan-Schläger-Hauptmann** | Erhöhte HP, Stampf-Angriff |
-| 2 | **Tempel-Wächter** | Drei-Phasen-Kampf, ruft Verstärkung |
-| 3 | **Schatten-Zwillinge** | Zwei Bosse gleichzeitig |
-| 4 | **Klan-Kommandant** | Katana-Combos + Wurfstern-Salve |
-| 5 | **Hafen-Meister** | Nutzt Ketten und Haken |
-| 6 | **Schiffskapitän** | Kampf auf schwankendem Deck |
-| 7 | **Zoll-Wächter** | Schild + Pistole (seltene Schusswaffe) |
-| 8 | **Straßen-Krieger** | Aggressive Combos, Ausweich-Manöver |
-| 9 | **U-Bahn-Jäger** | Angriffe aus der Dunkelheit |
-| 10 | **Dach-Sniper** | Fernkampf + Fallen auf dem Dach |
-| 11 | **Klan-Elite** | Alle Waffen, schnell, hart |
-| 12 | **Anführer des Schwarzen Klans** | Finaler Boss — alle Mechaniken kombiniert, 4 Phasen |
+| Level | Boss | Waffe(n) | Besonderheit |
+|-------|------|----------|--------------|
+| 1 | **Klan-Schläger-Hauptmann** | Axt | Erhöhte HP, Stampf-Angriff |
+| 2 | **Tempel-Wächter** | Naginata + Fackel | Drei-Phasen-Kampf, Fackel neutralisiert Rauch |
+| 3 | **Schatten-Zwillinge** | Katana + Wurfsterne | Zwei Bosse gleichzeitig |
+| 4 | **Klan-Kommandant** | Katana + Pistole | Combos im Nahkampf, Schüsse auf Distanz |
+| 5 | **Hafen-Meister** | Kette & Eisenkugel | Mittlere Reichweite, umschlingt bei Treffer |
+| 6 | **Schiffskapitän** | Cutlass + Flintlock | Kampf auf schwankendem Deck |
+| 7 | **Zoll-Wächter** | Schild + Pistole | Blockt frontal, schießt bei Lücken |
+| 8 | **Straßen-Krieger** | Baseballschläger + Dual Karambit | Phase 1 Schläger, Phase 2 Klingen |
+| 9 | **U-Bahn-Jäger** | Schrotflinte + Gasgranate | Angriffe aus der Dunkelheit |
+| 10 | **Dach-Sniper** | Sniper-Gewehr + Armbrust | Fernkampf + Fallen auf dem Dach |
+| 11 | **Klan-Elite** | Dual-Pistolen + Sturmgewehr | Phase 1 Akimbo, Phase 2 Dauerfeuer |
+| 12 | **Anführer des Schwarzen Klans** | Ninjato + alle Waffen | Finaler Boss — 4 Phasen, wechselndes Arsenal |
 
 ### 7.3 Boss-Design-Prinzipien
 
@@ -304,7 +387,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | **Musik Japan** | Langsame Shamisen, tiefe Taiko, düstere Flöten — wenig Melodie, viel Atmosphäre |
 | **Musik New York** | Synthwave-Ambient, dumpfe Bässe, entfremdet |
 | **Boss-Musik** | Intensiver, schnelleres Tempo, einzigartig pro Boss |
-| **SFX Kampf** | Metallisches Klirren (Katana), Wispern (Wurfsterne), dumpfe Treffer |
+| **SFX Kampf** | Metallisches Klirren (Katana), Wispern (Wurfsterne), Knall (Schusswaffen), dumpfe Treffer (Axtschlag), Zischen (Gasgranate) |
 | **Umgebung** | Regen, Wind, entfernte Sirenen (NY), Kickeulen (Japan) |
 
 ---
