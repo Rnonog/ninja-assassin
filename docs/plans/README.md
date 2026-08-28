@@ -7,7 +7,7 @@ Jeder Task (Feature, Bug, Verbesserung) hat einen Ordner `docs/plans/<aufgabe>/`
 1. Subagent `task-slicer` erzeugt `INDEX.md` und Stubs aus `_templates/`.
 2. Features: Subagent `feature-planner` füllt die Slice-Dateien. Bugs: `bug-investigator` füllt `BUG.md` (Phase 0).
 3. User gibt im INDEX frei.
-4. `feature-implementer` → `code-reviewer` → Criticals fixen → `spiel-playtester`.
+4. `feature-implementer` → `code-reviewer` (Plan so umgesetzt wie gewollt, Struktur, Modularisierung, Best Practices) → Criticals fixen → `spiel-playtester`.
 
 Kleine Aufgaben: ein Slice reicht.
 

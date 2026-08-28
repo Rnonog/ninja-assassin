@@ -17,7 +17,7 @@ Implementierung nur nach User-Freigabe der Plan-Dateien unter `docs/plans/<aufga
 4. Subagent `feature-planner` → Slice-Dateien füllen (Pflicht bei Features).
 5. User-Freigabe abwarten.
 6. Subagent `feature-implementer` (nur freigegebener Slice, inkl. Tests).
-7. Subagent `code-reviewer`. Criticals fixen, bevor Playtest.
+7. Subagent `code-reviewer`: Plan so umgesetzt wie gewollt? Struktur, Modularisierung, Best Practices. Criticals fixen, bevor Playtest.
 8. Subagent `spiel-playtester` (Verhalten im laufenden Spiel).
 9. Automatisierte Regressionstests und In-Game-Checks laut Slice.
 
@@ -25,7 +25,7 @@ Implementierung nur nach User-Freigabe der Plan-Dateien unter `docs/plans/<aufga
 
 1. Subagent `task-slicer` → INDEX + Bug-Stub.
 2. Phase 0: Subagent `bug-investigator` — Repro, Root-Cause, Doku. Kein Fix in Phase 0. Kein Blind-Fix.
-3. Failing Regressionstest zuerst, dann `feature-implementer`, dann `code-reviewer`.
+3. Failing Regressionstest zuerst, dann `feature-implementer`, dann `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices).
 4. Retest: Suite + `spiel-playtester`.
 
 ## Verbesserung
@@ -34,7 +34,7 @@ Implementierung nur nach User-Freigabe der Plan-Dateien unter `docs/plans/<aufga
 2. Subagent `task-slicer` → INDEX + Stub. Mini-Scope = 1 Slice.
 3. Ist-Zustand im laufenden Spiel oder per Test nachweisen (Baseline).
 4. Subagent `feature-planner` füllt den Slice. User-Freigabe abwarten.
-5. `feature-implementer` → `code-reviewer` → Criticals fixen → `spiel-playtester`.
+5. `feature-implementer` → `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices) → Criticals fixen → `spiel-playtester`.
 6. Regressionstests für das verbesserte Verhalten.
 
 Templates: `docs/plans/_templates/`.

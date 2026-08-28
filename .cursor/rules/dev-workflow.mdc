@@ -17,7 +17,7 @@ Orchestration: [`.cursor/skills/dev-workflow/SKILL.md`](../skills/dev-workflow/S
 2. Subagent `task-slicer` → INDEX + Stubs
 3. Subagent `feature-planner` → Slice-Dateien füllen (Pflicht)
 4. User-Freigabe abwarten
-5. `feature-implementer` → `code-reviewer` → Criticals fixen → `spiel-playtester`
+5. `feature-implementer` → `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices) → Criticals fixen → `spiel-playtester`
 6. Automatisierte Regressionstests + Verhalten im laufenden Spiel
 
 Kleine Aufgaben: ein Slice reicht (kein künstliches Splitting).
@@ -26,7 +26,7 @@ Kleine Aufgaben: ein Slice reicht (kein künstliches Splitting).
 
 1. `task-slicer` → INDEX + Bug-Stub
 2. Phase 0 Pflicht: Subagent `bug-investigator` (Repro, RCA, Doku). Kein Blind-Fix.
-3. Failing Regressionstest zuerst, dann Fix, dann Retest (Suite + `spiel-playtester`).
+3. Failing Regressionstest zuerst, dann Fix, dann `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices), dann Retest (Suite + `spiel-playtester`).
 
 ## Verbesserung
 
@@ -34,5 +34,5 @@ Kleine Aufgaben: ein Slice reicht (kein künstliches Splitting).
 2. `task-slicer` → INDEX + Stub; Mini-Scope = 1 Slice
 3. Baseline im laufenden Spiel oder per Test nachweisen
 4. `feature-planner` füllt den Slice
-5. User-Freigabe, dann `feature-implementer` → `code-reviewer` → Criticals fixen → `spiel-playtester`
+5. User-Freigabe, dann `feature-implementer` → `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices) → Criticals fixen → `spiel-playtester`
 6. Regressionstests für das verbesserte Verhalten
