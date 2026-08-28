@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/projectile.gd" id="1_proj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_star"]
+size = Vector2(12, 12)
+
+[node name="Shuriken" type="Area2D"]
+collision_layer = 128
+collision_mask = 37
+monitoring = true
+monitorable = false
+script = ExtResource("1_proj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_star")
+
+[node name="Visual" type="ColorRect" parent="."]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+color = Color(0.78, 0.82, 0.9, 1)
+mouse_filter = 2

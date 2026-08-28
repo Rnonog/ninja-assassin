@@ -3,6 +3,8 @@ extends SceneTree
 const PlayerGD := preload("res://scripts/player.gd")
 const DummyGD := preload("res://scripts/dummy.gd")
 const HealthGD := preload("res://scripts/health.gd")
+const ClanThugGD := preload("res://scripts/clan_thug.gd")
+const ThrowFighterGD := preload("res://scripts/throw_fighter.gd")
 
 const ACTIONS := [
 	"move_left",
@@ -50,6 +52,16 @@ func _run_all() -> void:
 	await _test_death_stops_move_and_attack()
 	if PlayerGD.COMBO_ENABLED:
 		await _test_combo_light_light_heavy()
+	await _test_throw_without_ammo()
+	await _test_throw_hits_dummy()
+	await _test_ammo_pickup()
+	await _test_heal_pickup()
+	await _test_thug_chase_and_stab()
+	await _test_dodge_blocks_thug_stab()
+	await _test_thrower_projectile_hits_player()
+	await _test_dodge_blocks_thrower_projectile()
+	await _test_shuriken_interrupts_thrower_telegraph()
+	await _test_enemies_die_at_zero_hp()
 	_test_player_scene_art()
 	await _test_level_art()
 	_test_platforms_within_jump()
@@ -651,4 +663,267 @@ func _test_platforms_within_jump() -> void:
 			"top=%s apex_feet=%s" % [top, apex_feet]
 		)
 	level.free()
+
+
+func _count_group(group_name: StringName) -> int:
+	return get_nodes_in_group(group_name).size()
+
+
+func _spawn_combat_thug(world: Node, pos: Vector2):
+	var packed: PackedScene = load("res://scenes/clan_thug.tscn")
+	var thug = packed.instantiate()
+	thug.auto_aggro = false
+	thug.position = pos
+	world.add_child(thug)
+	return thug
+
+
+func _spawn_combat_thrower(world: Node, pos: Vector2):
+	var packed: PackedScene = load("res://scenes/throw_fighter.tscn")
+	var thrower = packed.instantiate()
+	thrower.auto_aggro = false
+	thrower.position = pos
+	world.add_child(thrower)
+	return thrower
+
+
+func _spawn_pickup_scene(world: Node, pos: Vector2, scene_path: String):
+	var packed: PackedScene = load(scene_path)
+	var pickup = packed.instantiate()
+	pickup.position = pos
+	world.add_child(pickup)
+	return pickup
+
+
+func _test_throw_without_ammo() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	player.shuriken_ammo = 0
+	player.request_throw()
+	await _step_physics(4)
+	_check(
+		"throw_without_ammo",
+		player.shuriken_ammo == 0 and _count_group(&"player_projectile") == 0,
+		"ammo=%s projectiles=%s" % [player.shuriken_ammo, _count_group(&"player_projectile")]
+	)
+	_teardown(world)
+
+
+func _test_throw_hits_dummy() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var dummy = _spawn_combat_dummy(world, Vector2(36, 158))
+	await _step_physics(3)
+	var start_hp: int = dummy.health.current
+	var start_ammo: int = player.shuriken_ammo
+	player.facing = 1
+	player.request_throw()
+	await _step_physics(_frames_for(0.2))
+	_check(
+		"throw_hits_dummy",
+		player.shuriken_ammo == start_ammo - 1
+		and dummy.health.current == start_hp - HealthGD.SHURIKEN_DAMAGE
+		and HealthGD.SHURIKEN_DAMAGE < HealthGD.LIGHT_DAMAGE,
+		"ammo %s -> %s hp %s -> %s" % [start_ammo, player.shuriken_ammo, start_hp, dummy.health.current]
+	)
+	_teardown(world)
+
+
+func _test_ammo_pickup() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	var start_ammo: int = player.shuriken_ammo
+	_spawn_pickup_scene(world, player.position, "res://scenes/ammo_pickup.tscn")
+	await _step_physics(6)
+	var after_pickup: int = player.shuriken_ammo
+	player.shuriken_ammo = HealthGD.MAX_AMMO
+	_spawn_pickup_scene(world, player.position, "res://scenes/ammo_pickup.tscn")
+	await _step_physics(6)
+	_check(
+		"ammo_pickup",
+		after_pickup == start_ammo + HealthGD.AMMO_PICKUP
+		and player.shuriken_ammo == HealthGD.MAX_AMMO,
+		"start=%s after=%s capped=%s" % [start_ammo, after_pickup, player.shuriken_ammo]
+	)
+	_teardown(world)
+
+
+func _test_heal_pickup() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = _spawn_combat_player(world, Vector2(0, 0))
+	await physics_frame
+	player.health.take_damage(HealthGD.HEAL_PICKUP)
+	var wounded: int = player.health.current
+	_spawn_pickup_scene(world, player.position, "res://scenes/heal_pickup.tscn")
+	await _step_physics(6)
+	var after_heal: int = player.health.current
+	player.heal(HealthGD.HEAL_PICKUP)
+	var at_cap: int = player.health.current
+	await _step_physics(20)
+	_check(
+		"heal_pickup",
+		wounded == HealthGD.MAX_HP - HealthGD.HEAL_PICKUP
+		and after_heal == HealthGD.MAX_HP
+		and at_cap == HealthGD.MAX_HP
+		and player.health.current == HealthGD.MAX_HP,
+		"wounded=%s after=%s cap=%s later=%s" % [wounded, after_heal, at_cap, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_thug_chase_and_stab() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thug = _spawn_combat_thug(world, Vector2(80, 158))
+	thug.auto_aggro = true
+	await _wait_on_floor(player)
+	await _wait_on_floor(thug)
+	var start_x: float = thug.position.x
+	var start_hp: int = player.health.current
+	await _step_physics(20)
+	var moved: bool = thug.position.x < start_x
+	await _step_physics(_frames_for(ClanThugGD.THUG_TELEGRAPH + ClanThugGD.THUG_ACTIVE + 0.5))
+	_check(
+		"thug_chase_and_stab",
+		moved and player.health.current == start_hp - HealthGD.THUG_DAMAGE,
+		"moved=%s x %s -> %s hp %s -> %s" % [moved, start_x, thug.position.x, start_hp, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_dodge_blocks_thug_stab() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thug = _spawn_combat_thug(world, Vector2(40, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	thug.request_stab()
+	var telegraph_frames := maxi(
+		int(floor(ClanThugGD.THUG_TELEGRAPH * float(Engine.physics_ticks_per_second))) - 1, 1
+	)
+	await _step_physics(telegraph_frames)
+	player.request_dodge()
+	await _step_physics(_frames_for(ClanThugGD.THUG_ACTIVE + 0.05))
+	_check(
+		"dodge_blocks_thug_stab",
+		player.health.current == start_hp,
+		"hp %s -> %s invulnerable=%s" % [start_hp, player.health.current, player.invulnerable]
+	)
+	_teardown(world)
+
+
+func _test_thrower_projectile_hits_player() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thrower = _spawn_combat_thrower(world, Vector2(48, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	thrower.request_throw_attack()
+	await _step_physics(_frames_for(ThrowFighterGD.THROWER_TELEGRAPH + 0.25))
+	_check(
+		"thrower_projectile_hits_player",
+		player.health.current == start_hp - HealthGD.THROWER_DAMAGE,
+		"hp %s -> %s projectiles=%s" % [start_hp, player.health.current, _count_group(&"enemy_projectile")]
+	)
+	_teardown(world)
+
+
+func _test_dodge_blocks_thrower_projectile() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thrower = _spawn_combat_thrower(world, Vector2(48, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	thrower.request_throw_attack()
+	var telegraph_frames := maxi(
+		int(floor(ThrowFighterGD.THROWER_TELEGRAPH * float(Engine.physics_ticks_per_second))) - 1, 1
+	)
+	await _step_physics(telegraph_frames)
+	player.request_dodge()
+	await _step_physics(_frames_for(0.25))
+	_check(
+		"dodge_blocks_thrower_projectile",
+		player.health.current == start_hp,
+		"hp %s -> %s invulnerable=%s" % [start_hp, player.health.current, player.invulnerable]
+	)
+	_teardown(world)
+
+
+func _test_shuriken_interrupts_thrower_telegraph() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thrower = _spawn_combat_thrower(world, Vector2(40, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	thrower.request_throw_attack()
+	await _step_physics(3)
+	player.facing = 1
+	player.request_throw()
+	await _step_physics(_frames_for(ThrowFighterGD.THROWER_TELEGRAPH + 0.25))
+	_check(
+		"shuriken_interrupts_thrower_telegraph",
+		player.health.current == start_hp
+		and _count_group(&"enemy_projectile") == 0
+		and thrower.health.current == HealthGD.THROWER_MAX_HP - HealthGD.SHURIKEN_DAMAGE,
+		"player_hp=%s thrower_hp=%s enemy_stars=%s phase=%s" % [
+			player.health.current,
+			thrower.health.current,
+			_count_group(&"enemy_projectile"),
+			thrower.phase,
+		]
+	)
+	_teardown(world)
+
+
+func _test_enemies_die_at_zero_hp() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thug = _spawn_combat_thug(world, Vector2(40, 158))
+	var thrower = _spawn_combat_thrower(world, Vector2(80, 158))
+	await _step_physics(3)
+	var start_hp: int = player.health.current
+	thug.health.take_damage(HealthGD.THUG_MAX_HP)
+	thrower.health.take_damage(HealthGD.THROWER_MAX_HP)
+	await physics_frame
+	if not thug.is_dead or not thrower.is_dead:
+		_check(
+			"enemies_die_at_zero_hp",
+			false,
+			"thug_dead=%s thrower_dead=%s" % [thug.is_dead, thrower.is_dead]
+		)
+		_teardown(world)
+		return
+	thug.request_stab()
+	thrower.request_throw_attack()
+	await _step_physics(
+		_frames_for(
+			maxf(ClanThugGD.THUG_TELEGRAPH + ClanThugGD.THUG_ACTIVE, ThrowFighterGD.THROWER_TELEGRAPH)
+			+ 0.25
+		)
+	)
+	_check(
+		"enemies_die_at_zero_hp",
+		player.health.current == start_hp and _count_group(&"enemy_projectile") == 0,
+		"hp %s -> %s enemy_stars=%s" % [start_hp, player.health.current, _count_group(&"enemy_projectile")]
+	)
+	_teardown(world)
 

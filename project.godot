@@ -75,6 +75,10 @@ pause={
 2d_physics/layer_3="dummy"
 2d_physics/layer_4="player_hitbox"
 2d_physics/layer_5="dummy_hitbox"
+2d_physics/layer_6="enemy"
+2d_physics/layer_7="enemy_hitbox"
+2d_physics/layer_8="player_projectile"
+2d_physics/layer_9="enemy_projectile"
 
 [physics]
 

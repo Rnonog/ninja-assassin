@@ -25,6 +25,7 @@ const BODY_HALF_WIDTH := 16.0
 const DEATH_RELOAD_DELAY := 2.0
 const COMBO_ENABLED := true
 const COMBO_FOLLOWUP_WINDOW := LIGHT_RECOVERY
+const KATANA_MASK := 4 | 32
 
 enum AttackKind { NONE, LIGHT, HEAVY }
 enum AttackPhase { IDLE, WINDUP, ACTIVE, RECOVERY }
@@ -36,6 +37,7 @@ var is_dead: bool = false
 var attack_kind: AttackKind = AttackKind.NONE
 var attack_phase: AttackPhase = AttackPhase.IDLE
 var health: Health
+var shuriken_ammo: int = 0
 
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
@@ -50,6 +52,7 @@ var _combo_window: float = 0.0
 var _hurt_flash_timer: float = 0.0
 var _hitbox: Hitbox
 var _hp_label: Label
+var _ammo_label: Label
 var _hit_visual: ColorRect
 var _hit_shape: CollisionShape2D
 var _reload_started: bool = false
@@ -63,12 +66,15 @@ func _ready() -> void:
 	health = get_node_or_null("Health") as Health
 	_hitbox = get_node_or_null("Hitbox") as Hitbox
 	_hp_label = get_node_or_null("HpLabel") as Label
+	_ammo_label = get_node_or_null("AmmoLabel") as Label
+	shuriken_ammo = Health.START_AMMO
+	_update_ammo_label()
 	if _hitbox:
 		_hit_visual = _hitbox.get_node_or_null("Visual") as ColorRect
 		_hit_shape = _hitbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		_hitbox.team = &"player"
 		_hitbox.collision_layer = 8
-		_hitbox.collision_mask = 4
+		_hitbox.collision_mask = KATANA_MASK
 		_hitbox.set_active(false)
 	var hurtbox := get_node_or_null("Hurtbox") as Area2D
 	if hurtbox:
@@ -134,6 +140,45 @@ func request_attack_heavy() -> void:
 		return
 	_combo_lights = 0
 	_start_attack(AttackKind.HEAVY)
+
+
+func request_throw() -> void:
+	if is_dead or _dodging:
+		return
+	if _heavy_rooted():
+		return
+	if shuriken_ammo <= 0:
+		return
+	shuriken_ammo -= 1
+	_update_ammo_label()
+	var host := get_parent()
+	if host == null:
+		shuriken_ammo += 1
+		_update_ammo_label()
+		return
+	var packed: PackedScene = load("res://scenes/shuriken.tscn")
+	if packed == null:
+		shuriken_ammo += 1
+		_update_ammo_label()
+		return
+	var star := packed.instantiate()
+	star.configure(&"player", Health.SHURIKEN_DAMAGE, facing, Projectile.SHURIKEN_SPEED)
+	host.add_child(star)
+	star.global_position = global_position + Vector2(float(facing) * (BODY_HALF_WIDTH + 8.0), 0.0)
+
+
+func add_ammo(amount: int) -> void:
+	if amount <= 0:
+		return
+	shuriken_ammo = mini(shuriken_ammo + amount, Health.MAX_AMMO)
+	_update_ammo_label()
+
+
+func heal(amount: int) -> void:
+	if health == null:
+		return
+	health.heal(amount)
+	_update_hp_label(health.current)
 
 
 func _can_combo_light() -> bool:
@@ -270,6 +315,8 @@ func _physics_process(delta: float) -> void:
 			request_attack_light()
 		if Input.is_action_just_pressed("attack_heavy"):
 			request_attack_heavy()
+		if Input.is_action_just_pressed("throw"):
+			request_throw()
 
 	if _iframe_timer > 0.0:
 		_iframe_timer = maxf(_iframe_timer - delta, 0.0)
@@ -380,6 +427,11 @@ func _on_damaged(_amount: int, remaining: int) -> void:
 func _update_hp_label(value: int) -> void:
 	if _hp_label:
 		_hp_label.text = str(value)
+
+
+func _update_ammo_label() -> void:
+	if _ammo_label:
+		_ammo_label.text = str(shuriken_ammo)
 
 
 func _update_animation() -> void:
