@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 2.2  
+**Version:** 2.3  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -338,6 +338,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | J | Leichter Katana-Hieb |
 | K | Schwerer Katana-Hieb |
 | L | Wurfstern werfen |
+| R | Rauchbombe (wenn vorhanden) |
 | Shift | Ausweichen |
 | Esc | Pause |
 
@@ -449,6 +450,97 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | Tod & Wiederholung | **Checkpoints** | Respawn am letzten Checkpoint mit vollem Leben |
 | Storytelling | **Cutscenes** | In-Engine-Sequenzen vor/nach Leveln und zwischen Akten |
 | Charakter-Progression | **Fester Charakter** | Keine Upgrades — Schwierigkeit nur über Level & Gegner |
+
+---
+
+## 14. Design-Vorschläge
+
+### 15.1 Spieldesign — 5 Vorschläge
+
+#### 1. „Lesbarer Tod“ — Fehler als Lernmoment
+
+Jeder Tod soll dem Spieler **sofort zeigen, wodurch** er getroffen wurde: kurzer Freeze-Frame, rote Silhouette der Waffe, und ein Wiederholungs-Hinweis („Ausweichen bei rotem Laser“). Kein Game Over-Screen mit langer Wartezeit — nach 2 Sekunden Respawn am Checkpoint. So bleibt der Flow erhalten und der Spieler lernt Waffenmuster organisch.
+
+#### 2. Risiko-Belohnung durch Nahkampf
+
+Fernkampf mit Wurfsternen ist sicher, aber **schwächer und begrenzt**. Wer aggressiv mit der Katana in den Nahkampf geht, beendet Kämpfe schneller und spart Munition — riskiert aber mehr Schaden. Diese Spannung hält jeden Kampf interessant, ohne Upgrades zu brauchen.
+
+#### 3. Düstere Stimmung durch Sound-Design
+
+Musik ist **sparsam** — lange Passagen nur mit Umgebungsgeräuschen (Regen, Wind, entfernte Schritte). Boss-Musik setzt erst ein, wenn der Spieler die Arena betritt. In New York dominieren dumpfe Bässe und Neon-Summen statt Melodien. Stille vor dem Kampf erzeugt Anspannung.
+
+#### 4. Cutscenes als Gameplay-Pause
+
+Cutscenes dienen nicht nur der Story, sondern als **atmende Pause** zwischen intensiven Abschnitten. Nach einem schweren Boss folgt eine kurze, stille Sequenz — der Ninja bandagiert seine Wunde, schaut auf die nächste Stadt. Kein Dialog-Overload, nur Bild und Emotion.
+
+#### 5. Waffen-Priorität im HUD
+
+Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner zücken die Waffe, Sniper-Laser leuchtet 1 Sekunde vor dem Schuss, Axt-Kämpfer holen weit aus. Der Spieler lernt, wen er zuerst eliminieren muss — ohne explizites Ziel-Markierungssystem.
+
+---
+
+### 15.2 Level-Design — Wald (Japan) — 4 Vorschläge
+
+| Nr. | Vorschlag | Umsetzung |
+|-----|-----------|-----------|
+| 1 | **Mehrschichtige Tiefe** | Vordergrund-Bäume (halbtransparent), Spiel-Ebene, Hintergrund-Nebel — Parallax erzeugt Tiefe in flachem 2D |
+| 2 | **Versteckte Gegner hinter Bambus** | Gegner tauchen erst auf, wenn der Ninja nahe genug ist — Überraschungsmoment, belohnt vorsichtiges Vorgehen |
+| 3 | **Wasserfall als natürliche Barriere** | Wasserfall blockiert den Weg — Ninja muss oben herumklettern, während Bogenschützen von der anderen Seite schießen |
+| 4 | **Fallende Blätter als Sichtstörung** | In Boss-Arena wirbelt der Wind Blätter auf — kurz schwerer, Projektile zu erkennen (nur visuell, kein unfairer Effekt) |
+
+**Beispiel Level 1 (*Nebliger Wald*):** Einstieg durch verbranntes Dorf (Cutscene-Reste), dann dichter Nebel, erster Kampf gegen 2 Schläger, Checkpoint an einem Schrein, Boss-Arena in einer Lichtung.
+
+---
+
+### 15.3 Level-Design — Dächer — 4 Vorschläge
+
+| Nr. | Vorschlag | Umsetzung |
+|-----|-----------|-----------|
+| 1 | **Abgrund als ständige Bedrohung** | Fehlende Sprünge = Tod — keine unsichtbaren Wände, klare Plattform-Kanten mit Warn-Schatten |
+| 2 | **Wind-Böen als Timing-Element** | Alle 8–10 Sekunden Windstoß — springende Gegner und der Ninja werden leicht zurückgedrängt; Sprünge müssen getimed werden |
+| 3 | **Kettenhaken-Routen** | Alternative Wege über Dächer — schneller, aber mehr Sniper-Gegner; Bodenroute sicherer, aber länger |
+| 4 | **Japan vs. NY visuell trennen** | Japan-Dächer: Holz, rote Ziegel, Mondlicht. NY-Dächer: Beton, Neon-Reklame, Regen auf Metall — gleiche Mechanik, anderer Look |
+
+**Beispiel Level 3 (*Dächer von Kyoto*):** Start auf niedrigem Dach, Sprung-Puzzle nach oben, Schatten-Ninja-Boss auf dem höchsten Tempel-Dach mit Panorama-Hintergrund.
+
+**Beispiel Level 10 (*Neon-Dächer*):** Regen, blinkende Neon-Schilder, Sniper von gegenüberliegendem Hochhaus — Spieler muss im Rhythmus der Lichtblitze vorrücken.
+
+---
+
+### 15.4 Level-Design — Stadt (New York) — 5 Vorschläge
+
+| Nr. | Vorschlag | Umsetzung |
+|-----|-----------|-----------|
+| 1 | **Neon als Lichtquelle** | Neon-Schilder beleuchten Bereiche — Ninja in Schatten schwerer zu treffen, unter Neon leicht erkennbar |
+| 2 | **Enge Gassen vs. offene Straßen** | Chinatown: enge Gänge, Nahkampf dominiert. Wall Street: breite Straßen, Söldner mit Sturmgewehren auf Dächern |
+| 3 | **Interaktive Umgebung** | Umgestoßene Mülltonnen blockieren kurz Projektile; kaputte Straßenlaternen erzeugen Funken (visuell, kein Gameplay-Effekt) |
+| 4 | **U-Bahn als Horror-Level** | Fast komplett dunkel — nur Lichtkegel der Ninja-Fackel und entfernte Zuglichter. Gegner tauchen aus Schatten auf |
+| 5 | **Vertikale Wolkenkratzer-Ebenen** | Level 12 (*Der Gipfel*): Aufzug-Schacht, Treppenhaus, Dach — drei vertikale Abschnitte statt horizontalem Scrollen |
+
+**Beispiel Level 8 (*Chinatown*):** Enge Gasse mit roten Laternen, Gangmitglieder mit Baseballschlägern, Boss-Kampf auf einem Wochenmarkt mit umgestürzten Ständen als Deckung.
+
+**Beispiel Level 9 (*U-Bahn-Schatten*):** Fahrende U-Bahn im Hintergrund (Parallax), Gasgranaten reduzieren Sichtfeld, Schrotflinten-Gegner lauern hinter Säulen.
+
+---
+
+### 15.5 Level-Design — Hafen & Schiff — 3 Vorschläge
+
+| Nr. | Vorschlag | Umsetzung |
+|-----|-----------|-----------|
+| 1 | **Sturm-Physik auf dem Deck** | Level 6 (*Über dem Meer*): Plattform kippt leicht mit Wellengang — Sprünge und Timing erschwert, Harpunen fliegen unregelmäßiger |
+| 2 | **Regen und Wellen als Atmosphäre** | Level 5 (*Hafen im Sturm*): Starker Regen, Kran-Haken als Plattformen, Hafen-Meister-Boss auf einem schwankenden Steg |
+| 3 | **Übergang Japan → Westen** | Cutscene beim Verlassen des Hafens: Ninja blickt zurück auf Japan (Silhouette), dann schwarzer Bildschirm — Ankunft in NY |
+
+---
+
+### 15.6 Level-Design — Querschnitt (alle Level-Typen) — 4 Vorschläge
+
+| Nr. | Vorschlag | Umsetzung |
+|-----|-----------|-----------|
+| 1 | **Checkpoint als visueller Marker** | Japan: kleiner Schrein mit brennender Kerze. NY: kaputte Straßenlaterne. Einheitlich erkennbar, regional unterschiedlich |
+| 2 | **Boss-Arena immer abgetrennt** | Vor dem Boss: automatisches Tor schließt sich — kein Zurück, kurzer Versorgungsabschnitt mit Heilung und Wurfsternen |
+| 3 | **Level-Dauer 5–10 Minuten** | Kurze, fokussierte Abschnitte — kein Padding. Lieber 12 dichte Level als 6 lange |
+| 4 | **Geheime Kurzwege** | Optionaler oberer Pfad mit mehr Gegnern aber schnellerem Fortschritt — belohnt erfahrene Spieler ohne zu bestrafen |
 
 ---
 
