@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 2.3  
+**Version:** 2.4  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -135,6 +135,7 @@ Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endbo
 - Erzeugt eine Rauchwolke, die **Sichtlinien blockiert** (Gegner verlieren kurz den Anblick)
 - Nützlich gegen Schützen und in Boss-Phasen zum Repositionieren
 - Passt zur düsteren Ninja-Ästhetik — kein greller Effekt, nur aufsteigender schwarzer Nebel
+- **Counter:** Fackel-Werfer (Tempel-Wächter Phase 2) **verbrennt die Rauchwolke sofort** — in dieser Phase ist die Rauchbombe wirkungslos; Spieler muss Nahkampf oder Ausweichen nutzen
 
 #### Kettenhaken (Level-Mechanik)
 
@@ -167,6 +168,8 @@ Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endbo
 | **Naginata** | Tempel-Wächter | Längere Reichweite als Katana — Haltungskampf |
 | **Nunchaku** | Straßenkämpfer (Japan) | Schnelle Schläge, schwer ausweichbar |
 | **Kette & Eisenkugel** | Hafen-Meister (Boss) | Mittlere Reichweite, umschlingt bei Treffer kurz |
+| **Shuriken-Falle** | Fallenleger | Bodenfalle — schwach leuchtend, Ausweichen oder Sprung nötig |
+| **Fackel-Werfer** | Tempel-Wächter (Phase 2) | Erhellt Arena, verbrennt Rauchbombe sofort |
 
 **Übergang — Schiff & Hafen**
 
@@ -190,35 +193,33 @@ Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endbo
 | **Elektroschocker** | NY-Security | Kurzer Stun bei Treffer (~1 Sekunde) |
 | **Molotow-Cocktail** | Straßenschläger | Flächenschaden am Boden, brennt 3 Sekunden |
 | **Gasgranate** | U-Bahn-Spezialist | Reduziert Sichtfeld des Spielers kurzzeitig |
-
-#### Eigene Waffen-Ideen (designspezifisch)
-
-| Waffe | Konzept | Gameplay-Idee |
-|-------|---------|---------------|
-| **Shuriken-Falle** | Gegner legt Bodenfallen | Leuchtet schwach — Ninja muss springen oder ausweichen |
-| **Fackel-Werfer** | Tempel-Wächter (Phase 2) | Erhellt Arena, verbrennt Rauchbombe sofort |
-| **Kettensäge** | Wall-Street-Minion | Laut, langsam, hoher Schaden — akustische Warnung |
-| **Armbrust (schwer)** | Dach-Elite | Durchdringender Bolzen — blockt nicht, nur Ausweichen |
-| **Dual-Pistolen** | Klan-Elite (Boss Phase 1) | Akimbo-Schüsse in wechselnden Mustern |
-| **Ninjato (gebrochene Klinge)** | Anführer des Schwarzen Klans | Finaler Boss — schnellere Combos als Spieler-Katana |
+| **Kettensäge** | Kettensäge-Minion | Laut, langsam, hoher Schaden — akustische Warnung vor Angriff |
+| **Armbrust (schwer)** | Dach-Elite | Durchdringender Bolzen — Block unwirksam, nur Ausweichen |
+| **Dual-Pistolen** | Klan-Elite (Phase 1) | Akimbo-Schüsse in wechselnden Mustern |
+| **Ninjato (gebrochene Klinge)** | Anführer des Schwarzen Klans | Schnellere Combos als Spieler-Katana — Finalboss-Waffe |
 
 ### 5.4 Kampfsystem
 
 ```
 Nahkampf:  Leichter Hieb → Leichter Hieb → Schwerer Hieb (Combo)
 Fernkampf: Wurfstern (begrenzte Munition)
-Defensive: Ausweichen (i-Frames), Blocken (reduziert Schaden, kurze Erholung — schwach gegen Schrotflinte/Gewehr)
+Defensive: Ausweichen (i-Frames), Blocken (reduziert Schaden, kurze Erholung)
+           Block unwirksam gegen: Armbrust (schwer), Sturmgewehr-Dauerfeuer, Schrotflinte
+Taktik:    Rauchbombe (Sicht blockieren) — von Fackel-Werfer sofort neutralisiert
 ```
 
 - **Treffer-Feedback:** Bildschirm-Shake, kurzer Freeze-Frame bei kritischen Treffern
 - **Gegner-Reaktion:** Gegner taumeln bei starken Hieben, Elite-Gegner können blocken
+- **Durchdringende Angriffe:** Armbrust (schwer) und schwere Schusswaffen ignorieren Block vollständig — Spieler muss ausweichen oder hinter Deckung gehen
+- **Bodenfallen:** Shuriken-Fallen bleiben nach Auslösung kurz sichtbar — erneutes Betreten verursacht erneut Schaden
+- **Fackel vs. Rauchbombe:** In Tempel-Wächter Phase 2 erhellt die Fackel die gesamte Arena und verbrennt jede Rauchwolke bei Kontakt — taktischer Gegen-Counter zum Ninja-Deckungswerkzeug
 
 ### 5.5 Leben & Schaden
 
 - **Lebenspunkte:** Fester Wert von **100 HP** — keine Upgrades, keine permanente Steigerung
 - **Keine Regeneration:** HP regenerieren sich nicht automatisch
 - **Heilung:** Seltener Pickup im Level (Medizin-Rolle / Erste-Hilfe-Kit, +30 HP)
-- **Schaden:** Abhängig von Waffe und Gegnertyp (Messer ~10 HP, Axt ~20 HP, Schusswaffen ~15–30 HP, Boss ~25 HP pro Treffer)
+- **Schaden:** Abhängig von Waffe und Gegnertyp (Messer ~10 HP, Axt ~20 HP, Shuriken-Falle ~15 HP, Schusswaffen ~15–30 HP, Kettensäge ~35 HP, Armbrust ~25 HP — nicht blockbar, Fackel ~20 HP Flächenschaden, Boss ~25 HP pro Treffer)
 - **Tod:** Respawn am letzten Checkpoint mit vollem Leben
 
 ### 5.6 Fester Charakter — keine Upgrades
@@ -284,6 +285,7 @@ Schwierigkeitssteigerung entsteht ausschließlich durch **härtere Level, stärk
 | Typ | Waffe(n) | Verhalten | Vorkommen |
 |-----|----------|-----------|-----------|
 | **Klan-Schläger** | Messer, Faust | Rennt auf Spieler zu, schnelle Stiche | Japan, frühe Level |
+| **Fallenleger** | Shuriken-Falle | Legt Bodenfallen, hält Abstand; schwache Leuchte als Warnung | Japan — Wald, Tempel (ab Level 1–2) |
 | **Axt-Kämpfer** | Axt | Langsamer, schwerer Hieb, hoher Schaden | Japan — Wald, Dorf |
 | **Wurfkämpfer** | Wurfsterne, Wurfaxt | Hält Abstand, wirft aus der Ferne | Ab Level 2 |
 | **Katana-Krieger** | Katana | Blockt, führt Combos aus | Ab Level 3 |
@@ -295,7 +297,9 @@ Schwierigkeitssteigerung entsteht ausschließlich durch **härtere Level, stärk
 | **Klan-Söldner** | Sturmgewehr | Dauerfeuer, sucht Deckung | NY — Straßen, ab Level 8 |
 | **Chinatown-Assassine** | Dual Karambit | Sehr schnelle Combos, niedrige HP | NY — Chinatown |
 | **Sniper** | Sniper-Gewehr | Sehr hohe Plattform, roter Laser vor Schuss | NY-Dächer |
+| **Dach-Elite** | Armbrust (schwer) | Hohe HP, durchdringende Bolzen — Block unwirksam | NY — Neon-Dächer (Level 10) |
 | **U-Bahn-Jäger** | Schrotflinte, Gasgranate | Lauert in Dunkelheit, Flächenangriffe | NY — Untergrund |
+| **Kettensäge-Minion** | Kettensäge | Langsam, laut (Motor-Geräusch), verheerender Nahkampf | NY — Wall Street (Level 11) |
 | **NY-Security** | Elektroschocker, Pistole | Stun + Nahkampf | NY — Wall Street |
 | **Elite-Wache** | Katana (schwer) oder Sturmgewehr | Hohe HP, langsam aber verheerend | Späte Level |
 
@@ -306,7 +310,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | Level | Boss | Waffe(n) | Besonderheit |
 |-------|------|----------|--------------|
 | 1 | **Klan-Schläger-Hauptmann** | Axt | Erhöhte HP, Stampf-Angriff |
-| 2 | **Tempel-Wächter** | Naginata + Fackel | Drei-Phasen-Kampf, Fackel neutralisiert Rauch |
+| 2 | **Tempel-Wächter** | Naginata + **Fackel-Werfer** | **Phase 1:** Naginata-Haltungskampf. **Phase 2:** Wechsel zur Fackel — erhellt die Arena (reduziert Schatten-Deckung), **verbrennt Rauchbombe sofort** bei Kontakt. **Phase 3:** Kombination beider Waffen |
 | 3 | **Schatten-Zwillinge** | Katana + Wurfsterne | Zwei Bosse gleichzeitig |
 | 4 | **Klan-Kommandant** | Katana + Pistole | Combos im Nahkampf, Schüsse auf Distanz |
 | 5 | **Hafen-Meister** | Kette & Eisenkugel | Mittlere Reichweite, umschlingt bei Treffer |
@@ -314,9 +318,9 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | 7 | **Zoll-Wächter** | Schild + Pistole | Blockt frontal, schießt bei Lücken |
 | 8 | **Straßen-Krieger** | Baseballschläger + Dual Karambit | Phase 1 Schläger, Phase 2 Klingen |
 | 9 | **U-Bahn-Jäger** | Schrotflinte + Gasgranate | Angriffe aus der Dunkelheit |
-| 10 | **Dach-Sniper** | Sniper-Gewehr + Armbrust | Fernkampf + Fallen auf dem Dach |
-| 11 | **Klan-Elite** | Dual-Pistolen + Sturmgewehr | Phase 1 Akimbo, Phase 2 Dauerfeuer |
-| 12 | **Anführer des Schwarzen Klans** | Ninjato + alle Waffen | Finaler Boss — 4 Phasen, wechselndes Arsenal |
+| 10 | **Dach-Sniper** | Sniper-Gewehr + **Armbrust (schwer)** | Fernkampf von Plattformen; **Armbrust-Bolzen durchdringen Block** — nur Ausweichen oder Deckung. Shuriken-Fallen auf dem Dach als zusätzliche Bedrohung |
+| 11 | **Klan-Elite** | **Dual-Pistolen** + Sturmgewehr | **Phase 1:** Akimbo-Schüsse in wechselnden Mustern (links/rechts/hoch). **Phase 2:** Sturmgewehr-Dauerfeuer — Deckung zwingend |
+| 12 | **Anführer des Schwarzen Klans** | **Ninjato (gebrochene Klinge)** + Arsenal | **4 Phasen.** **Phase 1:** Ninjato — **schnellere Combos als Spieler-Katana** (4-Hieb-Kette), erfordert präzises Ausweichen. Phasen 2–4: wechselndes Arsenal (Pistole, Sturmgewehr, Wurfsterne) |
 
 ### 7.3 Boss-Design-Prinzipien
 
@@ -324,6 +328,8 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 2. Klare **Angriffsmuster** — lernbar, aber unerbittlich
 3. **Telegraphing:** Boss-Angriffe sind visuell ankündigt (Aufwinden, Leuchten)
 4. **Schwachpunkt-Phasen:** Nach schweren Angriffen kurzes Zeitfenster für Konter
+5. **Waffen-Counter:** Bosse können Ninja-Werkzeuge neutralisieren (Fackel vs. Rauchbombe) — erzwingt Anpassung statt Einheits-Taktik
+6. **Unblockbare Bedrohungen:** Armbrust und schwere Schusswaffen lehren, dass Block nicht immer die Antwort ist
 
 ---
 
@@ -388,7 +394,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | **Musik Japan** | Langsame Shamisen, tiefe Taiko, düstere Flöten — wenig Melodie, viel Atmosphäre |
 | **Musik New York** | Synthwave-Ambient, dumpfe Bässe, entfremdet |
 | **Boss-Musik** | Intensiver, schnelleres Tempo, einzigartig pro Boss |
-| **SFX Kampf** | Metallisches Klirren (Katana), Wispern (Wurfsterne), Knall (Schusswaffen), dumpfe Treffer (Axtschlag), Zischen (Gasgranate) |
+| **SFX Kampf** | Metallisches Klirren (Katana), Wispern (Wurfsterne), Knall (Schusswaffen), dumpfe Treffer (Axtschlag), Zischen (Gasgranate), Kreischen (Kettensäge), leises Klicken (Shuriken-Falle), Feuer-Zischen (Fackel-Werfer), schwerer Bolzen-Aufprall (Armbrust), doppelter Pistolen-Knall (Dual-Pistolen), scharfes Klirren (Ninjato) |
 | **Umgebung** | Regen, Wind, entfernte Sirenen (NY), Kickeulen (Japan) |
 
 ---
@@ -450,12 +456,15 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | Tod & Wiederholung | **Checkpoints** | Respawn am letzten Checkpoint mit vollem Leben |
 | Storytelling | **Cutscenes** | In-Engine-Sequenzen vor/nach Leveln und zwischen Akten |
 | Charakter-Progression | **Fester Charakter** | Keine Upgrades — Schwierigkeit nur über Level & Gegner |
+| Rauchbombe vs. Fackel | **Fackel neutralisiert Rauch** | Tempel-Wächter Phase 2 — taktischer Counter, kein permanenter Nachteil |
+| Block vs. durchdringend | **Armbrust & schwere Schusswaffen ignorieren Block** | Spieler muss Ausweichen lernen — nicht alles ist parierbar |
+| Bodenfallen | **Shuriken-Fallen als Gegner-Werkzeug** | Fallenleger in Japan — erweitert Kampf um Positions-Disziplin |
 
 ---
 
 ## 14. Design-Vorschläge
 
-### 15.1 Spieldesign — 5 Vorschläge
+### 14.1 Spieldesign — 5 Vorschläge
 
 #### 1. „Lesbarer Tod“ — Fehler als Lernmoment
 
@@ -475,11 +484,11 @@ Cutscenes dienen nicht nur der Story, sondern als **atmende Pause** zwischen int
 
 #### 5. Waffen-Priorität im HUD
 
-Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner zücken die Waffe, Sniper-Laser leuchtet 1 Sekunde vor dem Schuss, Axt-Kämpfer holen weit aus. Der Spieler lernt, wen er zuerst eliminieren muss — ohne explizites Ziel-Markierungssystem.
+Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner zücken die Waffe, Sniper-Laser leuchtet 1 Sekunde vor dem Schuss, Axt-Kämpfer holen weit aus, **Shuriken-Fallen leuchten schwach**, **Kettensäge-Minions sind akustisch hörbar** bevor sie sichtbar werden. Der Spieler lernt, wen er zuerst eliminieren muss — ohne explizites Ziel-Markierungssystem.
 
 ---
 
-### 15.2 Level-Design — Wald (Japan) — 4 Vorschläge
+### 14.2 Level-Design — Wald (Japan) — 4 Vorschläge
 
 | Nr. | Vorschlag | Umsetzung |
 |-----|-----------|-----------|
@@ -488,11 +497,13 @@ Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner z
 | 3 | **Wasserfall als natürliche Barriere** | Wasserfall blockiert den Weg — Ninja muss oben herumklettern, während Bogenschützen von der anderen Seite schießen |
 | 4 | **Fallende Blätter als Sichtstörung** | In Boss-Arena wirbelt der Wind Blätter auf — kurz schwerer, Projektile zu erkennen (nur visuell, kein unfairer Effekt) |
 
-**Beispiel Level 1 (*Nebliger Wald*):** Einstieg durch verbranntes Dorf (Cutscene-Reste), dann dichter Nebel, erster Kampf gegen 2 Schläger, Checkpoint an einem Schrein, Boss-Arena in einer Lichtung.
+**Beispiel Level 1 (*Nebliger Wald*):** Einstieg durch verbranntes Dorf (Cutscene-Reste), dann dichter Nebel, erster Kampf gegen 2 Schläger, **Fallenleger legt Shuriken-Fallen** vor dem Checkpoint, Boss-Arena in einer Lichtung.
+
+**Beispiel Level 2 (*Tempel der Asche*):** Dunkle Tempelhallen mit Kerzenlicht, **Fallenleger** in Seitengängen, Boss-Arena erhellt sich in Phase 2 durch **Fackel-Werfer** — Rauchbombe wirkungslos, Ninja muss Nahkampf riskieren.
 
 ---
 
-### 15.3 Level-Design — Dächer — 4 Vorschläge
+### 14.3 Level-Design — Dächer — 4 Vorschläge
 
 | Nr. | Vorschlag | Umsetzung |
 |-----|-----------|-----------|
@@ -503,11 +514,11 @@ Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner z
 
 **Beispiel Level 3 (*Dächer von Kyoto*):** Start auf niedrigem Dach, Sprung-Puzzle nach oben, Schatten-Ninja-Boss auf dem höchsten Tempel-Dach mit Panorama-Hintergrund.
 
-**Beispiel Level 10 (*Neon-Dächer*):** Regen, blinkende Neon-Schilder, Sniper von gegenüberliegendem Hochhaus — Spieler muss im Rhythmus der Lichtblitze vorrücken.
+**Beispiel Level 10 (*Neon-Dächer*):** Regen, blinkende Neon-Schilder, Sniper von gegenüberliegendem Hochhaus — Spieler muss im Rhythmus der Lichtblitze vorrücken. **Dach-Elite** mit Armbrust erzwingt Ausweichen statt Blocken.
 
 ---
 
-### 15.4 Level-Design — Stadt (New York) — 5 Vorschläge
+### 14.4 Level-Design — Stadt (New York) — 5 Vorschläge
 
 | Nr. | Vorschlag | Umsetzung |
 |-----|-----------|-----------|
@@ -519,11 +530,15 @@ Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner z
 
 **Beispiel Level 8 (*Chinatown*):** Enge Gasse mit roten Laternen, Gangmitglieder mit Baseballschlägern, Boss-Kampf auf einem Wochenmarkt mit umgestürzten Ständen als Deckung.
 
+**Beispiel Level 11 (*Wall Street*):** Breite Straßen, **Kettensäge-Minions** als akustische Bedrohung (Motor-Geräusch hörbar bevor Gegner sichtbar), Klan-Elite-Boss mit Dual-Pistolen Phase 1.
+
+**Beispiel Level 12 (*Der Gipfel*):** Vertikaler Aufstieg, finale Arena auf dem Dach — **Anführer des Schwarzen Klans** mit **Ninjato (gebrochene Klinge)**: 4-Hieb-Combos schneller als Spieler-Katana, erfordert perfektes Ausweichen-Timing.
+
 **Beispiel Level 9 (*U-Bahn-Schatten*):** Fahrende U-Bahn im Hintergrund (Parallax), Gasgranaten reduzieren Sichtfeld, Schrotflinten-Gegner lauern hinter Säulen.
 
 ---
 
-### 15.5 Level-Design — Hafen & Schiff — 3 Vorschläge
+### 14.5 Level-Design — Hafen & Schiff — 3 Vorschläge
 
 | Nr. | Vorschlag | Umsetzung |
 |-----|-----------|-----------|
@@ -533,7 +548,7 @@ Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner z
 
 ---
 
-### 15.6 Level-Design — Querschnitt (alle Level-Typen) — 4 Vorschläge
+### 14.6 Level-Design — Querschnitt (alle Level-Typen) — 4 Vorschläge
 
 | Nr. | Vorschlag | Umsetzung |
 |-----|-----------|-----------|
@@ -544,7 +559,7 @@ Gegner zeigen **visuell ihre Bedrohung**, bevor sie angreifen: Pistolen-Gegner z
 
 ---
 
-## 14. Referenzen & Inspiration
+## 15. Referenzen & Inspiration
 
 - *Shinobi* (Arcade) — 2D-Ninja-Action, Side-Scroller
 - *Ninja Gaiden* — Herausfordernder Schwertkampf
