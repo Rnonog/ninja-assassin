@@ -464,6 +464,27 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 
 ## 14. Design-Vorschläge
 
+> **Konzeptbilder:** Alle Visualisierungen liegen unter [`docs/design/`](docs/design/).
+
+### 14.0 Konzeptbilder — Übersicht
+
+| Bereich | Bild | Datei |
+|---------|------|-------|
+| Spieldesign — Lesbarer Tod | ![Lesbarer Tod](docs/design/design-spieldesign-lesbarer-tod.png) | `design-spieldesign-lesbarer-tod.png` |
+| Spieldesign — Nahkampf-Risiko | ![Nahkampf Risiko](docs/design/design-spieldesign-nahkampf-risiko.png) | `design-spieldesign-nahkampf-risiko.png` |
+| Spieldesign — Waffen-Priorität | ![Waffen Priorität](docs/design/design-spieldesign-waffen-prioritaet.png) | `design-spieldesign-waffen-prioritaet.png` |
+| Spieldesign — Cutscene-Pause | ![Cutscene Pause](docs/design/design-spieldesign-cutscene-pause.png) | `design-spieldesign-cutscene-pause.png` |
+| Level — Wald | ![Wald](docs/design/design-level-wald.png) | `design-level-wald.png` |
+| Level — Dächer Kyoto | ![Dächer Kyoto](docs/design/design-level-daecher-kyoto.png) | `design-level-daecher-kyoto.png` |
+| Level — Neon-Dächer NY | ![Neon Dächer](docs/design/design-level-daecher-neon.png) | `design-level-daecher-neon.png` |
+| Level — Chinatown | ![Chinatown](docs/design/design-level-chinatown.png) | `design-level-chinatown.png` |
+| Level — U-Bahn | ![U-Bahn](docs/design/design-level-u-bahn.png) | `design-level-u-bahn.png` |
+| Level — Hafen im Sturm | ![Hafen](docs/design/design-level-hafen.png) | `design-level-hafen.png` |
+| Level — Schiff | ![Schiff](docs/design/design-level-schiff.png) | `design-level-schiff.png` |
+| Level — Gipfel (Finale) | ![Gipfel](docs/design/design-level-gipfel.png) | `design-level-gipfel.png` |
+| Hafen — Übergang Japan→Westen | ![Übergang](docs/design/design-hafen-uebergang-japan.png) | `design-hafen-uebergang-japan.png` |
+| Querschnitt — Checkpoint & Boss | ![Checkpoint Boss](docs/design/design-querschnitt-checkpoint-boss.png) | `design-querschnitt-checkpoint-boss.png` |
+
 ### 14.1 Spieldesign — 5 Vorschläge
 
 #### 1. „Lesbarer Tod“ — Fehler als Lernmoment
