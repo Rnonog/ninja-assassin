@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -9,9 +9,9 @@
 
 ## 1. Elevator Pitch
 
-*Ninja Assassin* ist ein taktisches Stealth-Action-Spiel aus der Vogelperspektive. Der Spieler schlüpft in die Rolle eines namenlosen Shinobi, der feindliche Festungen infiltriert, Wachen ausmanövriert und hochrangige Ziele lautlos eliminiert. Präzision, Geduld und Planung werden belohnt — Lautstärke und Hektik bestraft.
+*Ninja Assassin* ist ein düsteres 2D-Action-Spiel aus der Seitenansicht. Ein einsamer Shinobi kämpft sich von seiner Heimat in Japan bis in die Neon-Schatten von New York — Level für Level, Gegner für Gegner, Boss für Boss. Katana gegen Katana, Wurfstern gegen Wurfstern.
 
-> **Kurzform:** Schleiche durch Schatten, eliminiere dein Ziel, verschwinde spurlos.
+> **Kurzform:** Ein Pfad. Zwei Welten. Kein Entkommen — nur Vorwärts.
 
 ---
 
@@ -19,205 +19,241 @@
 
 ### 2.1 Kernfantasie
 
-Der Spieler fühlt sich wie ein Meister-Assassine: unsichtbar, tödlich und immer einen Schritt voraus. Jeder Raum ist ein Puzzle aus Sichtlinien, Geräuschen und Timing.
+Der Spieler erlebt die brutale Odyssee eines Ninja, der alles verloren hat und nur noch den Weg nach vorn kennt. Jedes Level ist ein weiteres Stück dieser Reise — von nebligen Wäldern über Dächer im Mondlicht bis in die kalten Straßen einer fremden Metropole. Die Stimmung ist düster, bedrohlich und unerbittlich.
 
 ### 2.2 Zielgruppe
 
-- Fans von Stealth-Spielen (*Mark of the Ninja*, *Stealth Inc.*, *Hotline Miami* im Planungsmodus)
-- Gelegenheitsspieler, die kurze, intensive Missionen bevorzugen
-- Altersempfehlung: **12+** (stilisierte Gewalt, keine explizite Brutalität)
+- Fans von 2D-Action-Plattformern (*Shinobi*, *Ninja Gaiden*, *Katana ZERO*)
+- Spieler, die herausforderndes Kampfdesign und atmosphärische Welten schätzen
+- Altersempfehlung: **16+** (düstere Thematik, stilisierte Gewalt)
 
 ### 2.3 Alleinstellungsmerkmale (USP)
 
 | Merkmal | Beschreibung |
 |---------|--------------|
-| **Schatten-System** | Sichtbarkeit hängt von Licht und Deckung ab — kein reiner „Unsichtbarkeitsmodus“ |
-| **Geräusch-Feedback** | Jede Aktion erzeugt Lautstärke; Wachen reagieren dynamisch |
-| **Ghost-Rating** | Missionen werden nach Entdeckung, Körpern und Zeit bewertet |
-| **Minimalistische Ästhetik** | Klare Silhouetten, starke Kontraste — Gameplay steht im Vordergrund |
+| **Reise von Ost nach West** | Einzigartiger visueller und atmosphärischer Wandel von feudalem Japan bis zu modernem New York |
+| **Düstere Ästhetik** | Gedämpfte Farben, harte Schatten, Regen, Nebel — kein helles Abenteuer |
+| **Boss nach jedem Level** | Jeder Abschnitt endet mit einem stärkeren Endboss — klarer Schwierigkeitsanstieg |
+| **Symmetrischer Kampf** | Gegner nutzen dieselben Waffen wie der Spieler — Katana und Wurfsterne |
 
 ---
 
-## 3. Spielprinzip & Ziel
+## 3. Handlung
 
-### 3.1 Hauptziel
+### 3.1 Prämisse
 
-Infiltriere feindliche Anwesen, erreiche das **Primärziel** (Hauptmann, Daimyo, Spion) und entkomme ungesehen über den **Exfiltrationspunkt**.
+Der Ninja stammt aus einem abgelegenen Dorf in den Bergen Japans. Eine feindliche Organisation — der **Schwarze Klan** — vernichtet seine Heimat und tötet seine Familie. Der einzige Überlebende schwört Rache und folgt den Spuren des Klans quer durch die Welt, bis er deren Anführer in den Hochhäusern New Yorks stellt.
 
-### 3.2 Siegbedingungen
+### 3.2 Dramaturgische Bögen
 
-- Primärziel eliminiert oder entführt (missionsabhängig)
-- Spieler erreicht Exfiltrationszone
-- Optional: Sekundärziele erfüllt (Dokumente, Sabotage)
+| Akt | Setting | Stimmung |
+|-----|---------|----------|
+| **Akt I — Japan** | Wälder, Tempel, Dörfer, Dächer | Melancholisch, nebelverhangen, traditionell |
+| **Akt II — Übergang** | Hafen, Schiff, Küste | Unruhe, Abschied, Aufbruch |
+| **Akt III — New York** | Straßen, Dächer, U-Bahn, Wolkenkratzer | Kalt, neonbeleuchtet, urban, bedrohlich |
 
-### 3.3 Niederlagebedingungen
+### 3.3 Finale
 
-- Spieler stirbt (0 Trefferpunkte)
-- Alarmstufe **ROT** für mehr als 10 Sekunden ohne Flucht
-- Zeitlimit abgelaufen (nur in bestimmten Missionen)
+Im letzten Level erklimmt der Ninja den Gipfel eines Wolkenkratzers und stellt dem Anführer des Schwarzen Klans — dem Mann, der alles begann — ein letztes Mal.
 
 ---
 
-## 4. Spielmechaniken
+## 4. Spielprinzip & Ziel
 
-### 4.1 Bewegung
+### 4.1 Hauptziel
 
-- **Gehen:** Lautlos, langsam
-- **Rennen:** Schnell, erzeugt hohe Geräuschkulisse
-- **Kriechen:** Sehr langsam, nahezu lautlos, reduzierte Sichtbarkeit
-- **Klettern:** An Wänden und Vorsprüngen entlang (nur markierte Routen)
+Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endboss** eliminieren und zum Ausgang gelangen.
 
-### 4.2 Kampf & Eliminierung
+### 4.2 Siegbedingungen
 
-| Aktion | Wirkung | Risiko |
-|--------|---------|--------|
-| **Lautlose Eliminierung** (Nähe, von hinten) | Sofortiger Kill | Gering, wenn unentdeckt |
-| **Wurfwaffe** (Shuriken, Kunai) | Betäubt oder tötet aus Distanz | Mittel — verfehlte Würfe machen Lärm |
-| **Rauchbombe** | Blockiert Sichtlinie kurzzeitig | Gering — Ablenkung, kein Kill |
-| **Offener Kampf** (Katana) | Schneller Kill | Hoch — Alarm fast garantiert |
+- Endboss besiegt
+- Ausgang / Level-Ende erreicht
 
-### 4.3 Sicht & Schatten
+### 4.3 Niederlagebedingungen
 
-- **Sichtkegel** der Wachen sind sichtbar (optional abschaltbar für Hardcore-Modus)
-- **Lichtzonen:** Hell = leicht entdeckbar, Schatten = schwer entdeckbar
-- **Deckung:** Objekte blockieren Sichtlinien vollständig
+- Lebenspunkte des Ninja auf 0
+- (Optional) Absturz in tiefe Fallen ohne Rettung
 
-### 4.4 Geräuschsystem
+---
 
-Jede Aktion erzeugt **Lautstärke-Punkte** in einem Radius:
+## 5. Spielmechaniken
+
+### 5.1 Bewegung
+
+| Aktion | Beschreibung |
+|--------|--------------|
+| **Laufen** | Standardbewegung nach links/rechts |
+| **Springen** | Einzel- und Doppelsprung (freischaltbar) |
+| **Wandsprung** | An Wänden abstoßen (spätere Level) |
+| **Klettern** | Leitern, Seile, Dachkanten |
+| **Ausweichen** | Kurzer Roll-Sprung mit kurzer Unverwundbarkeit |
+
+### 5.2 Waffen des Ninja
+
+#### Katana (Nahkampf)
+
+- **Leichter Hieb:** Schnell, geringer Schaden
+- **Schwerer Hieb:** Langsamer, hoher Schaden, bricht gegnerische Abwehr
+- **Combo-Kette:** Bis zu 3 aufeinanderfolgende Hiebe bei präzisem Timing
+- **Luft-Angriff:** Abwärts-Hieb beim Springen
+
+#### Wurfsterne (Fernkampf)
+
+- Begrenzte Anzahl pro Level (Nachschub durch Pickups)
+- Schnelle Projektile in Wurfrichtung
+- Geringerer Schaden als Katana, aber sicherer Abstand
+- Können Wurfangriffe der Gegner unterbrechen
+
+### 5.3 Kampfsystem
 
 ```
-Gehen:     ░░░░░  (5 m)
-Rennen:    ░░░░░░░░░░  (15 m)
-Kampf:     ░░░░░░░░░░░░░░  (25 m)
-Leiche:    ░░░░░░░░░  (12 m — wenn entdeckt)
+Nahkampf:  Leichter Hieb → Leichter Hieb → Schwerer Hieb (Combo)
+Fernkampf: Wurfstern (begrenzte Munition)
+Defensive: Ausweichen (i-Frames), Blocken (reduziert Schaden, kurze Erholung)
 ```
 
-Wachen untersuchen Geräuschquellen und kehren nach Timeout zum Patrouillen zurück.
+- **Treffer-Feedback:** Bildschirm-Shake, kurzer Freeze-Frame bei kritischen Treffern
+- **Gegner-Reaktion:** Gegner taumeln bei starken Hieben, Elite-Gegner können blocken
 
-### 4.5 Alarmstufen
+### 5.4 Leben & Schaden
 
-| Stufe | Name | Verhalten der Wachen |
-|-------|------|---------------------|
-| 0 | **Grün** | Normale Patrouille |
-| 1 | **Gelb** | Erhöhte Wachsamkeit, erweiterte Sichtkegel |
-| 2 | **Rot** | Aktive Suche, Verstärkung wird gerufen |
-
----
-
-## 5. Progression & Meta-Game
-
-### 5.1 Missionen
-
-- **Kampagne:** 12 handgefertigte Missionen in 3 Akten
-  - *Akt I — Lehrling:* Einfache Infiltration, Tutorial-Mechaniken
-  - *Akt II — Schatten:* Komplexere Level, mehr Wachen, Sekundärziele
-  - *Akt III — Meister:* Enge Zeitlimits, mehrere Primärziele
-
-### 5.2 Ghost-Rating (pro Mission)
-
-| Rang | Bedingung |
-|------|-----------|
-| **S** | Keine Entdeckung, 0 Leichen sichtbar, unter Par-Zeit |
-| **A** | Max. 1 Entdeckung, alle Leichen versteckt |
-| **B** | Mission abgeschlossen, Alarm ausgelöst |
-| **C** | Mission abgeschlossen mit hohem Risiko / vielen Kills |
-
-### 5.3 Freischaltbare Ausrüstung
-
-- Shuriken (Standard)
-- Rauchbombe (Mission 3)
-- Hakenseil (Mission 5)
-- Betäubungspfeil (Mission 8)
-- Doppel-Katana (New Game+, alle S-Ränge)
+- **Lebensbalken:** 100 HP, keine automatische Regeneration
+- **Heilung:** Seltener Pickup (Medizin-Rolle / Erste-Hilfe-Kit)
+- **Schaden:** Abhängig von Gegnertyp und Angriffsart
 
 ---
 
 ## 6. Level-Design
 
-### 6.1 Struktur eines Levels
+### 6.1 Level-Typen
+
+| Typ | Setting | Besonderheiten |
+|-----|---------|----------------|
+| **Wald** | Bambus, Kiefern, Felsen, Wasserfall | Unebener Boden, versteckte Gegner hinter Bäumen |
+| **Dächer** | Japanische Dachlandschaft / NY-Skyline | Abgründe, Sprung-Puzzles, Wind als Hindernis |
+| **Stadt** | Gassen, Straßen, Neon, U-Bahn-Schächte | Engere Gänge, mehr Fernkämpfer, Sicherheitssysteme |
+
+### 6.2 Struktur eines Levels
 
 ```
-[Einstieg] → [Patrouillenzone] → [Schlüsselraum] → [Zielraum] → [Exfiltration]
-                  ↓
-           [Sekundärziel / Geheimweg]
+[Einstieg] → [Kampfzone 1] → [Plattform-Abschnitt] → [Kampfzone 2] → [Endboss-Arena] → [Ausgang]
 ```
 
-### 6.2 Designprinzipien
+- Jedes Level dauert ca. **5–10 Minuten**
+- Vor dem Boss: kurzer Versorgungsabschnitt (Heilung, Wurfsterne)
+- Boss-Arena ist abgetrennt — kein Zurückfliehen
 
-1. **Mehrere Lösungswege:** Laut, leise, Ablenkung, Umweg
-2. **Lesbarkeit:** Spieler erkennt Sichtlinien und Deckung auf einen Blick
-3. **Keine Dead Ends:** Jeder Raum hat mindestens zwei Ein-/Ausgänge
-4. **Belohnung für Erkundung:** Geheime Pfade, versteckte Ausrüstung
+### 6.3 Level-Übersicht (Entwurf)
 
-### 6.3 Beispiel-Mission: „Der Tempel des Verrats“
-
-- **Setting:** Japanisches Bergkloster bei Nacht
-- **Primärziel:** Korrupten Mönch eliminieren
-- **Sekundärziel:** Beweisdokumente stehlen
-- **Besonderheit:** Glöckchen-Wachen — bewegungsempfindlich
-- **Par-Zeit:** 4:30 Minuten
+| Nr. | Name | Setting | Endboss |
+|-----|------|---------|---------|
+| 1 | *Nebliger Wald* | Japan — Wald | Klan-Schläger |
+| 2 | *Tempel der Asche* | Japan — Tempel | Tempel-Wächter |
+| 3 | *Dächer von Kyoto* | Japan — Dächer | Schatten-Ninja |
+| 4 | *Verlassenes Dorf* | Japan — Dorf | Klan-Kommandant |
+| 5 | *Hafen im Sturm* | Japan — Küste | Hafen-Meister |
+| 6 | *Über dem Meer* | Schiff / Transit | Schiffskapitän |
+| 7 | *Ankunft* | New York — Hafen | Zoll-Wächter |
+| 8 | *Chinatown* | New York — Stadt | Straßen-Krieger |
+| 9 | *U-Bahn-Schatten* | New York — Untergrund | U-Bahn-Jäger |
+| 10 | *Neon-Dächer* | New York — Dächer | Dach-Sniper |
+| 11 | *Wall Street* | New York — Finanzdistrikt | Klan-Elite |
+| 12 | *Der Gipfel* | New York — Wolkenkratzer | **Anführer des Schwarzen Klans** |
 
 ---
 
-## 7. Gegner & KI
+## 7. Gegner & Endbosse
 
-### 7.1 Wachtypen
+### 7.1 Standard-Gegnertypen
 
-| Typ | Verhalten | Schwäche |
-|-----|-----------|----------|
-| **Patrouille** | Feste Route, langsamer Sichtkegel | Ablenkung von hinten |
-| **Wachposten** | Steht still, breiter Sichtkegel | Große Lücke im Kegel |
-| **Elite-Wache** | Reagiert schneller auf Geräusche | Kein Rücken-Kill bei voller Aufmerksamkeit |
-| **Glöckchen-Wache** | Alarm bei Bewegung in Radius | Nur aus großer Distanz ausschalten |
-| **Bogenschütze** | Fernkampf, hohe Position | Kein Nahkampf |
+| Typ | Waffe | Verhalten | Vorkommen |
+|-----|-------|-----------|-----------|
+| **Klan-Schläger** | Faust / Messer | Rennt auf Spieler zu, einfache Angriffe | Japan, frühe Level |
+| **Wurfkämpfer** | Wurfsterne | Hält Abstand, wirft aus der Ferne | Ab Level 2 |
+| **Katana-Krieger** | Katana | Blockt, führt Combos aus | Ab Level 3 |
+| **Bogenschütze** | Bogen (Fernkampf) | Plattform-Position, schießt von oben | Wälder, Dächer |
+| **Schatten-Ninja** | Katana + Wurfsterne | Teleportiert kurz, kombiniert Nah- und Fernkampf | Ab Level 5 |
+| **Sniper** | Langstrecken-Wurfsterne | Sehr hohe Plattform, präzise Schüsse | NY-Dächer |
+| **Elite-Wache** | Katana (schwer) | Hohe HP, langsame aber verheerende Hiebe | Späte Level |
 
-### 7.2 KI-Zustandsautomat
+### 7.2 Endbosse
 
-```
-Patrouillieren → Verdacht → Untersuchen → Alarm → Suchen → Patrouillieren
-```
+Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr Angriffsmuster, eigene Arena.
+
+| Level | Boss | Besonderheit |
+|-------|------|--------------|
+| 1 | **Klan-Schläger-Hauptmann** | Erhöhte HP, Stampf-Angriff |
+| 2 | **Tempel-Wächter** | Drei-Phasen-Kampf, ruft Verstärkung |
+| 3 | **Schatten-Zwillinge** | Zwei Bosse gleichzeitig |
+| 4 | **Klan-Kommandant** | Katana-Combos + Wurfstern-Salve |
+| 5 | **Hafen-Meister** | Nutzt Ketten und Haken |
+| 6 | **Schiffskapitän** | Kampf auf schwankendem Deck |
+| 7 | **Zoll-Wächter** | Schild + Pistole (seltene Schusswaffe) |
+| 8 | **Straßen-Krieger** | Aggressive Combos, Ausweich-Manöver |
+| 9 | **U-Bahn-Jäger** | Angriffe aus der Dunkelheit |
+| 10 | **Dach-Sniper** | Fernkampf + Fallen auf dem Dach |
+| 11 | **Klan-Elite** | Alle Waffen, schnell, hart |
+| 12 | **Anführer des Schwarzen Klans** | Finaler Boss — alle Mechaniken kombiniert, 4 Phasen |
+
+### 7.3 Boss-Design-Prinzipien
+
+1. Jeder Boss lehrt eine **neue Kampftechnik**, die der Spieler beherrschen muss
+2. Klare **Angriffsmuster** — lernbar, aber unerbittlich
+3. **Telegraphing:** Boss-Angriffe sind visuell ankündigt (Aufwinden, Leuchten)
+4. **Schwachpunkt-Phasen:** Nach schweren Angriffen kurzes Zeitfenster für Konter
 
 ---
 
 ## 8. Steuerung
 
-### 8.1 Tastatur & Maus (PC)
+### 8.1 Tastatur (PC)
 
 | Taste | Aktion |
 |-------|--------|
-| WASD | Bewegung |
-| Shift | Rennen |
-| Strg | Kriechen |
-| Leertaste | Interagieren / Eliminieren |
-| Q | Wurfwaffe |
-| E | Ausrüstung (Rauch, Seil) |
-| R | Leiche verstecken |
-| Tab | Sichtkegel ein/aus |
+| A / D oder ← / → | Bewegung links / rechts |
+| Leertaste | Springen |
+| J | Leichter Katana-Hieb |
+| K | Schwerer Katana-Hieb |
+| L | Wurfstern werfen |
+| Shift | Ausweichen |
+| Esc | Pause |
 
-### 8.2 Touch / Gamepad
+### 8.2 Gamepad
 
-- Linker Stick: Bewegung
-- A / X: Interagieren
-- B / Kreis: Wurfwaffe
-- L2 / LT: Kriechen
+| Taste | Aktion |
+|-------|--------|
+| Linker Stick | Bewegung |
+| A / X | Springen |
+| X / □ | Leichter Hieb |
+| Y / △ | Schwerer Hieb |
+| B / ○ | Wurfstern |
+| RB / R1 | Ausweichen |
 
 ---
 
 ## 9. Visueller Stil
 
-### 9.1 Art Direction
+### 9.1 Art Direction — Düster
 
-- **Perspektive:** Top-Down / leicht isometrisch (45°)
-- **Farbpalette:** Dunkle Blau-/Schwarztöne, Akzentfarbe Rot (Blut, Alarm), Gold (Ziele)
-- **Charaktere:** Silhouetten-Stil — wenig Detail, starke Lesbarkeit
-- **Umgebung:** Japanisches Feudal-Setting — Tempel, Festungen, Bambuswälder
+- **Perspektive:** 2D-Seitenansicht (Side-Scroller)
+- **Stimmung:** Düster, bedrohlich, melancholisch
+- **Farbpalette Japan:** Gedämpftes Grün, Grau, tiefes Rot, Mondlicht-Blau
+- **Farbpalette New York:** Neon-Pink, kaltes Blau, Asphalt-Grau, gelbes Straßenlicht
+- **Beleuchtung:** Starke Kontraste — helle Silhouetten vor dunklem Hintergrund
+- **Wetter:** Regen, Nebel, Schnee (Japan) / Regen, Nacht (New York)
 
-### 9.2 UI / HUD
+### 9.2 Charakter-Design
 
-- Minimalistisch: Geräusch-Meter, Alarmstufen-Anzeige, Ziel-Marker
-- Kein permanenter Minimap — optional einklappbar
-- Ghost-Rating am Missionsende als animierte Zusammenfassung
+- **Ninja:** Schwarze Silhouette mit rotem Schal — minimal, ikonisch
+- **Gegner:** Variierende Silhouetten je nach Typ, erkennbar an Waffen-Haltung
+- **Endbosse:** Größer, detaillierter, eigene Farbakzente (z. B. rote Rüstung)
+
+### 9.3 UI / HUD
+
+- Schlichter Lebensbalken oben links
+- Wurfstern-Zähler oben rechts
+- Boss-Lebensbalken unten Mitte (nur im Bosskampf)
+- Kein überladenes HUD — Fokus auf die Spielwelt
 
 ---
 
@@ -225,9 +261,11 @@ Patrouillieren → Verdacht → Untersuchen → Alarm → Suchen → Patrouillie
 
 | Kategorie | Beschreibung |
 |-----------|--------------|
-| **Musik** | Ambient, Shamisen & Taiko, dynamisch bei Alarm |
-| **SFX** | Betonung auf Schritte, Waffen, Wachen-Reaktionen |
-| **Feedback** | Subtiler Herzschlag bei hoher Entdeckungsgefahr |
+| **Musik Japan** | Langsame Shamisen, tiefe Taiko, düstere Flöten — wenig Melodie, viel Atmosphäre |
+| **Musik New York** | Synthwave-Ambient, dumpfe Bässe, entfremdet |
+| **Boss-Musik** | Intensiver, schnelleres Tempo, einzigartig pro Boss |
+| **SFX Kampf** | Metallisches Klirren (Katana), Wispern (Wurfsterne), dumpfe Treffer |
+| **Umgebung** | Regen, Wind, entfernte Sirenen (NY), Kickeulen (Japan) |
 
 ---
 
@@ -240,27 +278,29 @@ Patrouillieren → Verdacht → Untersuchen → Alarm → Suchen → Patrouillie
 
 ### 11.2 Tech-Stack (Vorschlag)
 
-- **Engine / Framework:** Phaser 3 oder PixiJS + TypeScript
+- **Engine / Framework:** Phaser 3 + TypeScript
 - **Build:** Vite
 - **Deployment:** GitHub Pages / statisches Hosting
 
 ### 11.3 MVP-Umfang (Version 0.1)
 
-- [ ] 1 spielbares Level
-- [ ] Bewegung (Gehen, Rennen, Kriechen)
-- [ ] 2 Wachtypen (Patrouille, Wachposten)
-- [ ] Sichtkegel & Schatten
-- [ ] Lautlose Eliminierung
-- [ ] Alarm-System (Grün / Gelb / Rot)
+- [ ] 1 spielbares Level (Wald, Japan)
+- [ ] Ninja-Bewegung (Laufen, Springen, Ausweichen)
+- [ ] Katana (leichter + schwerer Hieb)
+- [ ] Wurfsterne (Fernkampf, begrenzte Munition)
+- [ ] 2 Gegnertypen (Schläger, Wurfkämpfer)
+- [ ] 1 Endboss (Klan-Schläger-Hauptmann)
+- [ ] Lebens- & Schadenssystem
 - [ ] Sieg / Niederlage-Bildschirm
-- [ ] Ghost-Rating (S / A / B / C)
+- [ ] Düstere Grund-Atmosphäre (Farben, Hintergrund)
 
 ### 11.4 Nicht im MVP
 
-- Kampagne (12 Missionen)
-- Freischaltbare Ausrüstung
+- Vollständige Kampagne (12 Level)
+- Alle Gegnertypen und Bosse
+- New-York-Setting
 - Gamepad-Support
-- Mehrsprachigkeit
+- Zwischensequenzen / Story-Cutscenes
 
 ---
 
@@ -269,29 +309,30 @@ Patrouillieren → Verdacht → Untersuchen → Alarm → Suchen → Patrouillie
 | Phase | Inhalt | Ziel |
 |-------|--------|------|
 | **Phase 0** | Konzept & Prototyp | Dieses Dokument, 1 Greybox-Level |
-| **Phase 1** | MVP | Spielbarer Kern-Loop, 1 Level poliert |
-| **Phase 2** | Alpha | 5 Level, alle Wachtypen, Ausrüstung |
-| **Phase 3** | Beta | 12 Level, Ghost-Rating, Audio, UI |
-| **Phase 4** | Release | Balancing, Bugfixes, Deployment |
+| **Phase 1** | MVP | 1 Level (Wald), Kampf, 1 Boss — spielbar im Browser |
+| **Phase 2** | Alpha | 6 Level (Japan-Akt), alle JP-Gegnertypen, 6 Bosse |
+| **Phase 3** | Beta | 12 Level (Japan + NY), alle Bosse, Audio, UI |
+| **Phase 4** | Release | Balancing, Cutscenes, Bugfixes, Deployment |
 
 ---
 
 ## 13. Offene Fragen
 
-1. Soll das Spiel **rundenbasiert** (Zug für Zug) oder **in Echtzeit** sein?
-2. Gibt es eine **Geschichte / Cutscenes** oder nur Mission-Briefings?
-3. Soll ein **Level-Editor** für die Community geplant werden?
-4. **Permadeath** pro Mission oder unbegrenzte Wiederholungen?
+1. Soll der Ninja **Lebenspunkte** haben oder **One-Hit-Death** wie in *Katana ZERO*?
+2. Gibt es **Checkpoints** innerhalb eines Levels oder startet man bei Tod von vorne?
+3. Sollen **Zwischensequenzen** die Story erzählen oder reicht Text zwischen Leveln?
+4. Soll der Spieler **Upgrades** sammeln (z. B. mehr HP, extra Wurfsterne) oder ist jeder Run gleich?
 
 ---
 
 ## 14. Referenzen & Inspiration
 
-- *Mark of the Ninja* — Schatten & Sichtkegel
-- *Stealth Inc.* — Puzzle-Stealth aus Vogelperspektive
-- *Tenchu* — Ninja-Fantasie & Setting
-- *Hotline Miami* — Schnelle Missionen, klares Feedback
-- *Desperados III* — Taktische Planung, Ghost-Rating
+- *Shinobi* (Arcade) — 2D-Ninja-Action, Side-Scroller
+- *Ninja Gaiden* — Herausfordernder Schwertkampf
+- *Katana ZERO* — Düstere Ästhetik, präzises Kampfdesign
+- *Hollow Knight* — Atmosphäre, Boss-Design
+- *Ghost of Tsushima* — Japan-Setting, Samurai/Ninja-Fantasie
+- *Max Payne* — Düstere Großstadt, Rache-Erzählung
 
 ---
 
