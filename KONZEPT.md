@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 2.0  
+**Version:** 2.1  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -56,6 +56,23 @@ Der Ninja stammt aus einem abgelegenen Dorf in den Bergen Japans. Eine feindlich
 
 Im letzten Level erklimmt der Ninja den Gipfel eines Wolkenkratzers und stellt dem Anführer des Schwarzen Klans — dem Mann, der alles begann — ein letztes Mal.
 
+### 3.4 Cutscenes
+
+Die Story wird durch **Cutscenes** erzählt — vor, während und nach Leveln.
+
+| Zeitpunkt | Inhalt | Beispiel |
+|-----------|--------|----------|
+| **Spielstart** | Einführung in Handlung und Motivation | Zerstörung des Dorfes, Schwur des Ninja |
+| **Vor Level** | Kurzes Briefing — wo, warum, wer wartet | „Der Klan hat den Tempel besetzt …" |
+| **Nach Level** | Reaktion auf Boss-Sieg, Übergang zur nächsten Region | Ninja verlässt Japan, betritt das Schiff |
+| **Nach Akt** | Größere Zwischensequenz zwischen Japan und New York | Ankunft in New York bei Nacht |
+| **Finale** | Abschluss-Cutscene nach Sieg über den Endboss | Rache vollendet — offenes Ende |
+
+**Stil der Cutscenes:**
+- In-Engine-Animationen mit düsterer Silhouetten-Ästhetik (kein Vollbild-Video)
+- Minimale Dialoge — Bilder und kurze Textzeilen tragen die Emotion
+- Überspringbar mit einer Taste (Esc / B)
+
 ---
 
 ## 4. Spielprinzip & Ziel
@@ -71,8 +88,15 @@ Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endbo
 
 ### 4.3 Niederlagebedingungen
 
-- Lebenspunkte des Ninja auf 0
-- (Optional) Absturz in tiefe Fallen ohne Rettung
+- Lebenspunkte des Ninja auf 0 → Respawn am **letzten Checkpoint**
+- Absturz in tiefe Fallen → Respawn am letzten Checkpoint (kein sofortiger Tod)
+
+### 4.4 Checkpoints
+
+- Jedes Level enthält **2–4 Checkpoints** an strategischen Punkten (nach schwierigen Abschnitten, vor Boss-Arenen)
+- Aktivierung automatisch beim Passieren (Laternen / Schreine als visuelle Marker)
+- Beim Tod: Respawn am Checkpoint mit **vollem Leben**, Wurfsterne auf Stand bei Aktivierung
+- Beim Verlassen eines Levels: Checkpoints werden zurückgesetzt
 
 ---
 
@@ -83,8 +107,8 @@ Jedes Level von links nach rechts durchqueren, alle Gegner besiegen, den **Endbo
 | Aktion | Beschreibung |
 |--------|--------------|
 | **Laufen** | Standardbewegung nach links/rechts |
-| **Springen** | Einzel- und Doppelsprung (freischaltbar) |
-| **Wandsprung** | An Wänden abstoßen (spätere Level) |
+| **Springen** | Einzel- und Doppelsprung |
+| **Wandsprung** | An Wänden abstoßen (ab Level 3) |
 | **Klettern** | Leitern, Seile, Dachkanten |
 | **Ausweichen** | Kurzer Roll-Sprung mit kurzer Unverwundbarkeit |
 
@@ -117,9 +141,25 @@ Defensive: Ausweichen (i-Frames), Blocken (reduziert Schaden, kurze Erholung)
 
 ### 5.4 Leben & Schaden
 
-- **Lebensbalken:** 100 HP, keine automatische Regeneration
-- **Heilung:** Seltener Pickup (Medizin-Rolle / Erste-Hilfe-Kit)
-- **Schaden:** Abhängig von Gegnertyp und Angriffsart
+- **Lebenspunkte:** Fester Wert von **100 HP** — keine Upgrades, keine permanente Steigerung
+- **Keine Regeneration:** HP regenerieren sich nicht automatisch
+- **Heilung:** Seltener Pickup im Level (Medizin-Rolle / Erste-Hilfe-Kit, +30 HP)
+- **Schaden:** Abhängig von Gegnertyp und Angriffsart (Schläger ~10 HP, Boss ~25 HP pro Treffer)
+- **Tod:** Respawn am letzten Checkpoint mit vollem Leben
+
+### 5.5 Fester Charakter — keine Upgrades
+
+Der Ninja ist von Anfang bis Ende **statisch** — keine sammelbaren Verbesserungen.
+
+| Fest definiert | Nicht im Spiel |
+|----------------|----------------|
+| 100 HP | HP-Upgrades |
+| Katana (leicht + schwer) | Waffen-Upgrades |
+| Wurfsterne (begrenzt pro Level) | Permanente Munitions-Erhöhung |
+| Feste Combo-Kette | Skill-Bäume |
+| Ausweichen mit i-Frames | Cooldown-Reduktionen |
+
+Schwierigkeitssteigerung entsteht ausschließlich durch **härtere Level, stärkere Gegner und anspruchsvollere Bosse** — nicht durch stärker werdenden Spieler.
 
 ---
 
@@ -293,6 +333,8 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 - [ ] Lebens- & Schadenssystem
 - [ ] Sieg / Niederlage-Bildschirm
 - [ ] Düstere Grund-Atmosphäre (Farben, Hintergrund)
+- [ ] 1 Checkpoint pro Level
+- [ ] Intro-Cutscene (Spielstart)
 
 ### 11.4 Nicht im MVP
 
@@ -300,7 +342,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 - Alle Gegnertypen und Bosse
 - New-York-Setting
 - Gamepad-Support
-- Zwischensequenzen / Story-Cutscenes
+- Cutscenes zwischen allen Leveln (nur Intro im MVP)
 
 ---
 
@@ -311,17 +353,19 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | **Phase 0** | Konzept & Prototyp | Dieses Dokument, 1 Greybox-Level |
 | **Phase 1** | MVP | 1 Level (Wald), Kampf, 1 Boss — spielbar im Browser |
 | **Phase 2** | Alpha | 6 Level (Japan-Akt), alle JP-Gegnertypen, 6 Bosse |
-| **Phase 3** | Beta | 12 Level (Japan + NY), alle Bosse, Audio, UI |
+| **Phase 3** | Beta | 12 Level (Japan + NY), alle Bosse, Cutscenes, Audio, UI |
 | **Phase 4** | Release | Balancing, Cutscenes, Bugfixes, Deployment |
 
 ---
 
-## 13. Offene Fragen
+## 13. Design-Entscheidungen
 
-1. Soll der Ninja **Lebenspunkte** haben oder **One-Hit-Death** wie in *Katana ZERO*?
-2. Gibt es **Checkpoints** innerhalb eines Levels oder startet man bei Tod von vorne?
-3. Sollen **Zwischensequenzen** die Story erzählen oder reicht Text zwischen Leveln?
-4. Soll der Spieler **Upgrades** sammeln (z. B. mehr HP, extra Wurfsterne) oder ist jeder Run gleich?
+| Frage | Entscheidung | Auswirkung |
+|-------|--------------|------------|
+| Lebenssystem | **Lebenspunkte** (100 HP) | Mehrere Treffer erlaubt, Heilungs-Pickups sinnvoll |
+| Tod & Wiederholung | **Checkpoints** | Respawn am letzten Checkpoint mit vollem Leben |
+| Storytelling | **Cutscenes** | In-Engine-Sequenzen vor/nach Leveln und zwischen Akten |
+| Charakter-Progression | **Fester Charakter** | Keine Upgrades — Schwierigkeit nur über Level & Gegner |
 
 ---
 
