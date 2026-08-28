@@ -9,7 +9,7 @@
 [node name="LevelGreybox" parent="." instance=ExtResource("1_level")]
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(160, 378)
+position = Vector2(160, 368)
 
 [node name="Dummy" parent="." instance=ExtResource("3_dummy")]
-position = Vector2(300, 378)
+position = Vector2(300, 380)

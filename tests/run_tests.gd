@@ -50,6 +50,9 @@ func _run_all() -> void:
 	await _test_death_stops_move_and_attack()
 	if PlayerGD.COMBO_ENABLED:
 		await _test_combo_light_light_heavy()
+	_test_player_scene_art()
+	await _test_level_art()
+	_test_platforms_within_jump()
 
 
 func _check(test_name: String, ok: bool, detail: String = "") -> void:
@@ -542,3 +545,110 @@ func _test_combo_light_light_heavy() -> void:
 		"kind=%s phase=%s" % [player.attack_kind, player.attack_phase]
 	)
 	_teardown(world)
+
+
+func _test_player_scene_art() -> void:
+	var packed: PackedScene = load("res://scenes/player.tscn")
+	if packed == null:
+		_check("player_scene_art", false, "failed to load res://scenes/player.tscn")
+		return
+	var player := packed.instantiate()
+	var col := player.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if col == null or col.shape == null or not (col.shape is RectangleShape2D):
+		_check("player_collision_size", false, "missing RectangleShape2D")
+		player.free()
+		return
+	var size: Vector2 = (col.shape as RectangleShape2D).size
+	_check(
+		"player_collision_size",
+		absf(size.x - 32.0) <= 4.0 and absf(size.y - 64.0) <= 4.0,
+		"size=%s" % size
+	)
+	var sprite := player.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if sprite == null or sprite.sprite_frames == null:
+		_check("player_sprite_frames", false, "missing AnimatedSprite2D or SpriteFrames")
+		player.free()
+		return
+	var frames: SpriteFrames = sprite.sprite_frames
+	var expected := {
+		"idle": Vector2i(4, 6),
+		"run": Vector2i(6, 8),
+		"jump": Vector2i(2, 3),
+		"fall": Vector2i(2, 2),
+		"dodge": Vector2i(4, 6),
+	}
+	var missing: PackedStringArray = []
+	var bad_counts: PackedStringArray = []
+	for anim_name in expected:
+		if not frames.has_animation(anim_name):
+			missing.append(anim_name)
+			continue
+		var count := frames.get_frame_count(anim_name)
+		var lo: int = expected[anim_name].x
+		var hi: int = expected[anim_name].y
+		if count < lo or count > hi:
+			bad_counts.append("%s=%d" % [anim_name, count])
+	_check("player_animation_names", missing.is_empty(), "missing: %s" % ",".join(missing))
+	_check("player_animation_frame_counts", bad_counts.is_empty(), ",".join(bad_counts))
+	player.free()
+
+
+func _collect_class(node: Node, class_nm: String, out: Array) -> void:
+	if node.get_class() == class_nm:
+		out.append(node)
+	for child in node.get_children():
+		_collect_class(child, class_nm, out)
+
+
+func _test_level_art() -> void:
+	var packed: PackedScene = load("res://scenes/level_greybox.tscn")
+	if packed == null:
+		_check("level_art", false, "failed to load res://scenes/level_greybox.tscn")
+		return
+	var level := packed.instantiate()
+	root.add_child(level)
+	await physics_frame
+	var tiles := level.get_node_or_null("Tiles")
+	_check("level_tilemap", tiles is TileMapLayer, "Tiles node is %s" % tiles)
+	if tiles is TileMapLayer:
+		var tile_map := tiles as TileMapLayer
+		var size := Vector2i.ZERO
+		if tile_map.tile_set != null:
+			size = tile_map.tile_set.tile_size
+		_check("level_tile_size", size == Vector2i(32, 32), "tile_size=%s" % size)
+		_check(
+			"level_floor_tiles",
+			tile_map.get_cell_source_id(Vector2i(-7, 12)) != -1,
+			"missing floor cell at (-7, 12)"
+		)
+	var parallax := level.get_node_or_null("ParallaxBackground")
+	_check("level_parallax", parallax is ParallaxBackground, "missing ParallaxBackground")
+	var color_rects: Array = []
+	_collect_class(level, "ColorRect", color_rects)
+	_check("level_no_colorrect_visuals", color_rects.is_empty(), "ColorRects: %d" % color_rects.size())
+	_teardown(level)
+
+
+func _test_platforms_within_jump() -> void:
+	var gravity := float(ProjectSettings.get_setting("physics/2d/default_gravity"))
+	var jump_h := (PlayerGD.JUMP_VELOCITY * PlayerGD.JUMP_VELOCITY) / (2.0 * gravity)
+	var packed: PackedScene = load("res://scenes/level_greybox.tscn")
+	if packed == null:
+		_check("platforms_within_jump", false, "failed to load level")
+		return
+	var level := packed.instantiate()
+	var floor_body := level.get_node("Floor") as StaticBody2D
+	var floor_shape := floor_body.get_node("CollisionShape2D").shape as RectangleShape2D
+	var floor_top := floor_body.position.y - floor_shape.size.y * 0.5
+	var apex_feet := floor_top - jump_h
+	for plat_name in ["Platform1", "Platform2", "Platform3"]:
+		var plat := level.get_node(plat_name) as StaticBody2D
+		var shape := plat.get_node("CollisionShape2D").shape as RectangleShape2D
+		var top := plat.position.y - shape.size.y * 0.5
+		_check(
+			"reach_%s" % plat_name.to_lower(),
+			top >= apex_feet - 8.0,
+			"top=%s apex_feet=%s" % [top, apex_feet]
+		)
+	level.free()
+

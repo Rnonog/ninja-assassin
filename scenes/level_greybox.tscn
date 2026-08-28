@@ -1,80 +1,89 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/level_greybox.gd" id="1_level"]
+[ext_resource type="Texture2D" path="res://assets/tiles/pier.png" id="2_tiles"]
+[ext_resource type="Texture2D" path="res://assets/bg/harbor.png" id="3_harbor"]
+[ext_resource type="Texture2D" path="res://assets/bg/rain.png" id="4_rain"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pier"]
+texture = ExtResource("2_tiles")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_pier"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_pier")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(2400, 48)
+size = Vector2(2400, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat1"]
-size = Vector2(180, 20)
+size = Vector2(176, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat2"]
-size = Vector2(160, 20)
+size = Vector2(160, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat3"]
-size = Vector2(200, 20)
+size = Vector2(192, 32)
 
 [node name="LevelGreybox" type="Node2D"]
+script = ExtResource("1_level")
 
-[node name="Background" type="ColorRect" parent="."]
-z_index = -10
-offset_left = -200.0
-offset_top = -120.0
-offset_right = 2200.0
-offset_bottom = 900.0
-color = Color(0.13, 0.16, 0.14, 1)
-mouse_filter = 2
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+layer = -1
+
+[node name="HarborLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.15, 0.05)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="Harbor" type="Sprite2D" parent="ParallaxBackground/HarborLayer"]
+texture_filter = 0
+position = Vector2(-200, -80)
+texture = ExtResource("3_harbor")
+centered = false
+
+[node name="RainLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.55, 0.1)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="Rain" type="Sprite2D" parent="ParallaxBackground/RainLayer"]
+texture_filter = 0
+position = Vector2(-200, -80)
+texture = ExtResource("4_rain")
+centered = false
+
+[node name="Tiles" type="TileMapLayer" parent="."]
+texture_filter = 0
+position = Vector2(24, 16)
+tile_set = SubResource("TileSet_pier")
 
 [node name="Floor" type="StaticBody2D" parent="."]
-position = Vector2(1000, 424)
+position = Vector2(1000, 432)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
 shape = SubResource("RectangleShape2D_floor")
 
-[node name="Visual" type="ColorRect" parent="Floor"]
-offset_left = -1200.0
-offset_top = -24.0
-offset_right = 1200.0
-offset_bottom = 24.0
-color = Color(0.32, 0.34, 0.3, 1)
-mouse_filter = 2
-
 [node name="Platform1" type="StaticBody2D" parent="."]
-position = Vector2(320, 300)
+position = Vector2(320, 356)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
 shape = SubResource("RectangleShape2D_plat1")
 
-[node name="Visual" type="ColorRect" parent="Platform1"]
-offset_left = -90.0
-offset_top = -10.0
-offset_right = 90.0
-offset_bottom = 10.0
-color = Color(0.28, 0.3, 0.26, 1)
-mouse_filter = 2
-
 [node name="Platform2" type="StaticBody2D" parent="."]
-position = Vector2(620, 230)
+position = Vector2(620, 336)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
 shape = SubResource("RectangleShape2D_plat2")
 
-[node name="Visual" type="ColorRect" parent="Platform2"]
-offset_left = -80.0
-offset_top = -10.0
-offset_right = 80.0
-offset_bottom = 10.0
-color = Color(0.28, 0.3, 0.26, 1)
-mouse_filter = 2
-
 [node name="Platform3" type="StaticBody2D" parent="."]
-position = Vector2(980, 320)
+position = Vector2(980, 326)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
 shape = SubResource("RectangleShape2D_plat3")
-
-[node name="Visual" type="ColorRect" parent="Platform3"]
-offset_left = -100.0
-offset_top = -10.0
-offset_right = 100.0
-offset_bottom = 10.0
-color = Color(0.28, 0.3, 0.26, 1)
-mouse_filter = 2

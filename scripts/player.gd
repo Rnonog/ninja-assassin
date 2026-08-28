@@ -21,7 +21,7 @@ const HEAVY_ACTIVE := 0.14
 const HEAVY_RECOVERY := 0.28
 const LIGHT_HITBOX_SIZE := Vector2(28, 24)
 const HEAVY_HITBOX_SIZE := Vector2(44, 32)
-const BODY_HALF_WIDTH := 12.0
+const BODY_HALF_WIDTH := 16.0
 const DEATH_RELOAD_DELAY := 2.0
 const COMBO_ENABLED := true
 const COMBO_FOLLOWUP_WINDOW := LIGHT_RECOVERY
@@ -53,9 +53,13 @@ var _hp_label: Label
 var _hit_visual: ColorRect
 var _hit_shape: CollisionShape2D
 var _reload_started: bool = false
+var _sprite: AnimatedSprite2D = null
 
 
 func _ready() -> void:
+	_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if _sprite != null and not _sprite.is_playing():
+		_sprite.play("idle")
 	health = get_node_or_null("Health") as Health
 	_hitbox = get_node_or_null("Hitbox") as Hitbox
 	_hp_label = get_node_or_null("HpLabel") as Label
@@ -283,6 +287,7 @@ func _physics_process(delta: float) -> void:
 	if is_dead:
 		velocity = Vector2.ZERO
 		move_and_slide()
+		_update_animation()
 		_update_iframe_visual()
 		return
 
@@ -320,6 +325,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		_coyote_timer = maxf(_coyote_timer - delta, 0.0)
 
+	_update_animation()
 	_update_iframe_visual()
 
 
@@ -374,6 +380,21 @@ func _on_damaged(_amount: int, remaining: int) -> void:
 func _update_hp_label(value: int) -> void:
 	if _hp_label:
 		_hp_label.text = str(value)
+
+
+func _update_animation() -> void:
+	if _sprite == null:
+		return
+	_sprite.flip_h = facing < 0
+	var anim := "idle"
+	if _dodging:
+		anim = "dodge"
+	elif not is_on_floor():
+		anim = "jump" if velocity.y < 0.0 else "fall"
+	elif absf(velocity.x) > 10.0:
+		anim = "run"
+	if _sprite.animation != anim:
+		_sprite.play(anim)
 
 
 func _update_iframe_visual() -> void:
