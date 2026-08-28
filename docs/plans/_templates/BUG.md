@@ -35,6 +35,6 @@ Kein Blind-Fix. Kein Patch in Phase 0.
 
 ## Retest
 
-- [ ] Automatisierte Suite
+- [ ] Automatisierte Suite headless Pflicht (`bash scripts/run-tests.sh`; kein Godot-Fenster)
 - [ ] `code-reviewer` — Criticals gefixt
-- [ ] `spiel-playtester` im laufenden Spiel
+- [ ] `spiel-playtester` visuell nur auf ausdrücklichen Wunsch; sonst Skip mit Begründung

@@ -15,15 +15,17 @@ Was dieser Slice allein liefert.
 
 ## Automatisierte Tests
 
+Headless-Pflicht (Merge-Gate, `scripts/run-tests.sh`, kein Fenster):
+
 - Welche Tests neu oder erweitert werden
-- Befehl zum Ausführen
+- Befehl: `bash scripts/run-tests.sh`
 
 ## In-Game-Checks
 
-Verhalten im laufenden Spiel (nicht nur Unit-Tests):
+Visuelle In-Game-Checks nur auf ausdrücklichen User-Wunsch; sonst überspringen mit Begründung. Default ist die headless-Suite, kein Fensterspiel.
 
 - [ ] …
-- [ ] Übersprungen, weil: *(nur wenn kein Spielcode / Spiel startet nicht)*
+- [ ] Übersprungen, weil: *(kein ausdrücklicher User-Wunsch nach visuellem Playtest / kein Spielcode)*
 
 ## Out of scope
 

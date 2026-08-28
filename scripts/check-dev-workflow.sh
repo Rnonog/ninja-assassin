@@ -56,6 +56,8 @@ check "docs/plans/dev-workflow/INDEX.md"
 check "docs/plans/dev-workflow/01-prozess-hinterlegen.md"
 check "docs/plans/slim-workflow/INDEX.md"
 check "docs/plans/slim-workflow/01-rollen-skills-entfernen.md"
+check "docs/plans/async-tests/INDEX.md"
+check "docs/plans/async-tests/01-headless-background.md"
 
 echo "=== Sonstiges ==="
 check ".gitignore"
@@ -83,6 +85,29 @@ if grep -qi 'mehrphasig' "$root/.cursor/skills/dev-workflow/SKILL.md" \
   echo "OK: mehrphasiger Fortschritt in Skill und Regel"
 else
   echo "MISSING: mehrphasiger Fortschritt in Skill oder Regel"
+  missing=1
+fi
+
+echo "=== Headless-Suite und Background-Review ==="
+skill="$root/.cursor/skills/dev-workflow/SKILL.md"
+rule="$root/.cursor/rules/dev-workflow.mdc"
+playtester="$root/.cursor/agents/spiel-playtester.md"
+if grep -qE 'run_in_background|Hintergrund' "$skill" \
+  && grep -qi 'headless' "$skill" \
+  && grep -qE 'run_in_background|Hintergrund' "$rule" \
+  && grep -qi 'headless' "$rule"; then
+  echo "OK: Skill und Regel erwähnen run_in_background/Hintergrund und headless"
+else
+  echo "MISSING: Skill oder Regel ohne run_in_background/Hintergrund oder headless"
+  missing=1
+fi
+if grep -qi 'windowed' "$playtester" \
+  && grep -qi 'explicit' "$playtester" \
+  && grep -qi 'headless' "$playtester" \
+  && grep -qi 'focus' "$playtester"; then
+  echo "OK: spiel-playtester.md enthält die neue Policy (windowed/explicit/headless/focus)"
+else
+  echo "MISSING: spiel-playtester.md Policy (windowed, explicit, headless, focus)"
   missing=1
 fi
 

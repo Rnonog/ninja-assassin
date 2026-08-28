@@ -17,24 +17,26 @@ Orchestration: [`.cursor/skills/dev-workflow/SKILL.md`](../skills/dev-workflow/S
 2. Subagent `task-slicer` → INDEX + Stubs
 3. Subagent `feature-planner` → Slice-Dateien füllen (Pflicht)
 4. User-Freigabe abwarten
-5. `feature-implementer` → `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices) → Criticals fixen → `spiel-playtester`
-6. Automatisierte Regressionstests + Verhalten im laufenden Spiel
+5. `feature-implementer` (headless-Suite `bash scripts/run-tests.sh`; kein Godot-Fenster)
+6. Parent startet `code-reviewer` mit `run_in_background: true` (Plan-Treue, Struktur, Modularisierung, Best Practices). Keine Warteschleife im Parent-Chat; User kann weiterarbeiten; Parent wird benachrichtigt, wenn der Reviewer fertig ist. Criticals fixen.
+7. Merge-Gate: `bash scripts/run-tests.sh` (Godot `--headless`). Niemals ein Godot-Fenster für die Suite. Headless-Suite ist Pflicht.
+8. `spiel-playtester` ist kein blockierender Fenster-Durchlauf per Default: kein Godot-Editor, kein Fensterspiel, kein Fokus-Diebstahl. Visuelle In-Game-Checks nur auf ausdrücklichen User-Wunsch, sonst Skip mit Grund. Falls gestartet: ebenfalls `run_in_background: true` (Hintergrund).
 
 Kleine Aufgaben: ein Slice reicht (kein künstliches Splitting).
 
-Mehrphasige Vorhaben: im übergeordneten Plan (INDEX, Konzept-Roadmap, Cursor-Plan, Canvas) nach jeder Phase den Status markieren (`offen` / `in Umsetzung` / `erledigt`). Beim Start `in Umsetzung`, nach Playtest und Push `erledigt`, bevor die nächste Phase beginnt.
+Mehrphasige Vorhaben: im übergeordneten Plan (INDEX, Konzept-Roadmap, Cursor-Plan, Canvas) nach jeder Phase den Status markieren (`offen` / `in Umsetzung` / `erledigt`). Beim Start `in Umsetzung`, nach Headless-Tests, Review und Push `erledigt` (visuelles Playtest nur auf Wunsch), bevor die nächste Phase beginnt.
 
 ## Bug
 
 1. `task-slicer` → INDEX + Bug-Stub
 2. Phase 0 Pflicht: Subagent `bug-investigator` (Repro, RCA, Doku). Kein Blind-Fix.
-3. Failing Regressionstest zuerst, dann Fix, dann `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices), dann Retest (Suite + `spiel-playtester`).
+3. Failing Regressionstest zuerst, dann Fix, dann Parent startet `code-reviewer` mit `run_in_background: true` (Plan-Treue, Struktur, Modularisierung, Best Practices). Criticals fixen. Retest: headless-Suite `bash scripts/run-tests.sh` (kein Godot-Fenster). `spiel-playtester` visuell nur auf ausdrücklichen Wunsch, sonst Skip mit Grund; falls gestartet: `run_in_background: true` im Hintergrund.
 
 ## Verbesserung
 
 1. `AskQuestion` falls verfügbar, sonst im Parent-Chat (Ziel, Metrik, Scope)
 2. `task-slicer` → INDEX + Stub; Mini-Scope = 1 Slice
-3. Baseline im laufenden Spiel oder per Test nachweisen
+3. Baseline per Test nachweisen (im laufenden Spiel nur auf ausdrücklichen Wunsch)
 4. `feature-planner` füllt den Slice
-5. User-Freigabe, dann `feature-implementer` → `code-reviewer` (Plan-Treue, Struktur, Modularisierung, Best Practices) → Criticals fixen → `spiel-playtester`
-6. Regressionstests für das verbesserte Verhalten
+5. User-Freigabe, dann `feature-implementer` (headless `scripts/run-tests.sh`), dann Parent startet `code-reviewer` mit `run_in_background: true` (Plan-Treue, Struktur, Modularisierung, Best Practices) → Criticals fixen. Keine Warteschleife.
+6. Regressionstests headless (`bash scripts/run-tests.sh`). Visuelles Playtest nur auf ausdrücklichen Wunsch, sonst Skip mit Grund. Falls `spiel-playtester`: `run_in_background: true` (Hintergrund).
