@@ -9,7 +9,7 @@ Kein Implementieren ohne Plan-Modus (`SwitchMode` → plan) und Plan-Dateien unt
 
 Bei Unklarheit: `AskQuestion` falls verfügbar, sonst im Parent-Chat (Ziel, Metrik, Scope). Verbesserungsvorschläge einbringen und bestätigen lassen.
 
-Lies und folge [`.cursor/skills/dev-workflow/SKILL.md`](../skills/dev-workflow/SKILL.md) und [`.cursor/skills/git-trunk/SKILL.md`](../skills/git-trunk/SKILL.md).
+Orchestration: [`.cursor/skills/dev-workflow/SKILL.md`](../skills/dev-workflow/SKILL.md). Git: [`.cursor/skills/git-trunk/SKILL.md`](../skills/git-trunk/SKILL.md). Rollen: Subagents in `.cursor/agents/` (keine Skill je Rolle).
 
 ## Feature
 

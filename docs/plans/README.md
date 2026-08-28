@@ -11,6 +11,8 @@ Jeder Task (Feature, Bug, Verbesserung) hat einen Ordner `docs/plans/<aufgabe>/`
 
 Kleine Aufgaben: ein Slice reicht.
 
+Orchestration: Skill `dev-workflow`. Git: Skill `git-trunk` und Regel `.cursor/rules/git-trunk.mdc`.
+
 ## Dateien
 
 | Datei | Zweck |
@@ -18,5 +20,3 @@ Kleine Aufgaben: ein Slice reicht.
 | `_templates/INDEX.md` | Ziel, Metrik, Scope, Slice-Liste, Worktree, Freigabe |
 | `_templates/SLICE.md` | Feature-/Verbesserungs-Slice |
 | `_templates/BUG.md` | Bug Phase 0 + Fix/Retest |
-
-Worktree, Rebase und Push: Skill `git-trunk`, Regel `.cursor/rules/git-trunk.mdc`.

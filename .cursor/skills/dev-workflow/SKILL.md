@@ -5,9 +5,9 @@ description: Orchestrates Ninja Assassin work for new features, bugfixes, and im
 
 # Entwicklungsprozess
 
-Parent-Agent orchestriert. Implementierung nur nach User-Freigabe der Plan-Dateien.
+Parent-Agent orchestriert. Rollen leben in `.cursor/agents/` (keine extra Skill je Rolle). Git: Skill `git-trunk`. Vor jeder Code-Änderung Worktree laut `git-trunk`.
 
-Vor jeder Code-Änderung: Skill `git-trunk` (eigener Worktree).
+Implementierung nur nach User-Freigabe der Plan-Dateien unter `docs/plans/<aufgabe>/`.
 
 ## Feature oder neue Funktion
 
@@ -23,9 +23,9 @@ Vor jeder Code-Änderung: Skill `git-trunk` (eigener Worktree).
 
 ## Bugfix / Fehlerbehebung
 
-1. Subagent `task-slicer` → `docs/plans/<aufgabe>/INDEX.md` + Bug-Stub.
-2. Phase 0 Pflicht: Subagent `bug-investigator` — Reproduzieren → Root-Cause → dokumentieren in Slice/Bug-Dokument. Kein Fix in Phase 0. Kein Blind-Fix.
-3. Failing Regressionstest zuerst, dann `feature-implementer` (Fix), dann `code-reviewer`.
+1. Subagent `task-slicer` → INDEX + Bug-Stub.
+2. Phase 0: Subagent `bug-investigator` — Repro, Root-Cause, Doku. Kein Fix in Phase 0. Kein Blind-Fix.
+3. Failing Regressionstest zuerst, dann `feature-implementer`, dann `code-reviewer`.
 4. Retest: Suite + `spiel-playtester`.
 
 ## Verbesserung
@@ -36,17 +36,5 @@ Vor jeder Code-Änderung: Skill `git-trunk` (eigener Worktree).
 4. Subagent `feature-planner` füllt den Slice. User-Freigabe abwarten.
 5. `feature-implementer` → `code-reviewer` → Criticals fixen → `spiel-playtester`.
 6. Regressionstests für das verbesserte Verhalten.
-
-## Subagents und Skills
-
-| Phase | Subagent | Skill |
-|-------|----------|-------|
-| Slicing | `task-slicer` | `task-slicer` |
-| Feature-Plan | `feature-planner` | `feature-planner` |
-| Bug Phase 0 | `bug-investigator` | `bug-investigator` |
-| Implementierung | `feature-implementer` | `feature-implementer` |
-| Review | `code-reviewer` | `code-reviewer` |
-| Playtest | `spiel-playtester` | `spiel-playtester` |
-| Git | Parent | `git-trunk` |
 
 Templates: `docs/plans/_templates/`.

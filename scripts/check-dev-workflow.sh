@@ -26,15 +26,26 @@ check ".cursor/agents/feature-implementer.md"
 check ".cursor/agents/code-reviewer.md"
 check ".cursor/agents/spiel-playtester.md"
 
-echo "=== Skills ==="
+echo "=== Skills (nur Orchestration + Git) ==="
 check ".cursor/skills/dev-workflow/SKILL.md"
 check ".cursor/skills/git-trunk/SKILL.md"
-check ".cursor/skills/task-slicer/SKILL.md"
-check ".cursor/skills/feature-planner/SKILL.md"
-check ".cursor/skills/bug-investigator/SKILL.md"
-check ".cursor/skills/feature-implementer/SKILL.md"
-check ".cursor/skills/code-reviewer/SKILL.md"
-check ".cursor/skills/spiel-playtester/SKILL.md"
+
+echo "=== Keine Rollen-Skills ==="
+for rel in \
+  ".cursor/skills/task-slicer/SKILL.md" \
+  ".cursor/skills/feature-planner/SKILL.md" \
+  ".cursor/skills/bug-investigator/SKILL.md" \
+  ".cursor/skills/feature-implementer/SKILL.md" \
+  ".cursor/skills/code-reviewer/SKILL.md" \
+  ".cursor/skills/spiel-playtester/SKILL.md"
+do
+  if [[ -e "$root/$rel" ]]; then
+    echo "UNEXPECTED: $rel"
+    missing=1
+  else
+    echo "OK: absent $rel"
+  fi
+done
 
 echo "=== Plan-Templates ==="
 check "docs/plans/README.md"
@@ -43,9 +54,28 @@ check "docs/plans/_templates/SLICE.md"
 check "docs/plans/_templates/BUG.md"
 check "docs/plans/dev-workflow/INDEX.md"
 check "docs/plans/dev-workflow/01-prozess-hinterlegen.md"
+check "docs/plans/slim-workflow/INDEX.md"
+check "docs/plans/slim-workflow/01-rollen-skills-entfernen.md"
 
 echo "=== Sonstiges ==="
 check ".gitignore"
+
+echo "=== Agents ohne gelöschte Skill-Pfade ==="
+if grep -R -E 'skills/(task-slicer|feature-planner|bug-investigator|feature-implementer|code-reviewer|spiel-playtester)/' "$root/.cursor/agents" --include='*.md'; then
+  echo "UNEXPECTED: Agent verweist auf gelöschte Rollen-Skill"
+  missing=1
+else
+  echo "OK: keine Rollen-Skill-Pfade in .cursor/agents/"
+fi
+
+echo "=== Skills-Ordner nur Orchestration + Git ==="
+skill_dirs="$(find "$root/.cursor/skills" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | tr '\n' ' ')"
+if [[ "$skill_dirs" != "dev-workflow git-trunk " ]]; then
+  echo "UNEXPECTED skill dirs: $skill_dirs"
+  missing=1
+else
+  echo "OK: nur dev-workflow und git-trunk"
+fi
 
 echo "=== alwaysApply ==="
 for rel in ".cursor/rules/dev-workflow.mdc" ".cursor/rules/git-trunk.mdc"; do
@@ -58,7 +88,7 @@ for rel in ".cursor/rules/dev-workflow.mdc" ".cursor/rules/git-trunk.mdc"; do
 done
 
 if [[ "$missing" -ne 0 ]]; then
-  echo "FAIL: fehlende Dateien"
+  echo "FAIL: fehlende oder überzählige Dateien"
   exit 1
 fi
 
