@@ -1,6 +1,6 @@
 # Ninja Assassin — Konzeptdokument
 
-**Version:** 2.5  
+**Version:** 2.6  
 **Datum:** 28. August 2026  
 **Sprache:** Deutsch  
 **Projekt:** [ninja-assassin](https://github.com/Rnonog/ninja-assassin)
@@ -434,6 +434,9 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 - New-York-Setting
 - Gamepad-Support
 - Cutscenes zwischen allen Leveln (nur Intro im MVP)
+- Doppelsprung, Wandsprung, Klettern, Rauchbombe, Kettenhaken, Block
+- Combokette als Pflicht (Stretch in Stufe 2)
+- Fallenleger / Shuriken-Falle
 
 ---
 
@@ -441,11 +444,54 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 
 | Phase | Inhalt | Ziel |
 |-------|--------|------|
-| **Phase 0** | Konzept & Prototyp | Dieses Dokument, 1 Greybox-Level |
+| **Phase 0** | Konzept & Prototyp | Dieses Dokument — **erledigt** |
 | **Phase 1** | MVP | 1 Level (Wald), Kampf, 1 Boss — spielbar im Browser |
 | **Phase 2** | Alpha | 6 Level (Japan-Akt), alle JP-Gegnertypen, 6 Bosse |
 | **Phase 3** | Beta | 12 Level (Japan + NY), alle Bosse, Cutscenes, Audio, UI |
 | **Phase 4** | Release | Balancing, Cutscenes, Bugfixes, Deployment |
+
+### 12.1 MVP-Implementierung (Phase 1 in sechs Stufen)
+
+**Regel:** Jede Stufe endet spielbar. Feel vor Content, Loop vor Politur. Platzhalter-Art bis Stufe 6. Jede Stufe ist eine eigene Plan-Aufgabe (INDEX + Slices → Freigabe → Implementer → Review → Playtest).
+
+| Stufe | Name | Spieler kann danach | Fertig wenn |
+|-------|------|---------------------|-------------|
+| **1** | Steuerung & Greybox | Laufen, springen, ausweichen | Steuerung fühlt sich unmittelbar an; Szene startet ohne Fehler |
+| **2** | Nahkampf & Leben | Mit Katana treffen und sterben | Leicht/schwer unterscheidbar; Tod bei 0 HP |
+| **3** | Fernkampf & Gegner | Wurfsterne + Schläger + Wurfkämpfer | Munition begrenzt; beide Muster lesbar |
+| **4** | Level *Nebliger Wald* | Von links nach rechts bis zur Arena | 1 Checkpoint, Respawn, 5–10 Min. |
+| **5** | Boss, Sieg, Intro | Hauptmann besiegen, Intro skippen | Spielschleife geschlossen |
+| **6** | Atmosphäre, HUD, Export | Düsteres Level im Browser | Alle Punkte aus §11.3 abgehakt |
+
+**Stufe 1 — Steuerung & Greybox**
+- Godot 4 Projekt, Szenenbaum (Main / Player / Level), Input Map laut §8.1
+- CharacterBody2D: Gravitation, Laufen, Springen, Ausweichen mit i-Frames; Kamera folgt
+- Greybox-Boden und Plattformen — keine Pixel-Art
+
+**Stufe 2 — Nahkampf & Leben**
+- Leichter und schwerer Katana-Hieb mit Hitboxes; Dummy mit Hurtbox
+- 100 HP, Schaden, Tod; minimales Treffer-Feedback (Freeze-Frame oder Shake)
+- Combokette ist Stretch, kein Blocker
+
+**Stufe 3 — Fernkampf & Gegner**
+- Wurfsterne (Richtung, begrenzte Munition, Pickup); Heilungs-Pickup (+30 HP)
+- Klan-Schläger (rennt zu, Stiche) und Wurfkämpfer (Abstand, telegraphierter Wurf)
+- Nahkampf bleibt stärker als Fernkampf
+
+**Stufe 4 — Level *Nebliger Wald***
+- Layout: Einstieg → Kampfzone 1 → Plattform → Kampfzone 2 → Arena → Ausgang
+- Ein Checkpoint (Schrein), Auto-Aktivierung; Respawn mit vollem Leben, Wurfsterne auf Stand bei Aktivierung
+- Kein Fallenleger, kein Wasserfall-Puzzle
+
+**Stufe 5 — Boss, Sieg, Intro**
+- Klan-Schläger-Hauptmann: erhöhte HP, Stampf-Angriff, Telegraph; Arena schließt sich
+- Boss-Lebensbalken; Sieg (Boss tot + Ausgang); Niederlage → Respawn nach ~2 s
+- Intro-Cutscene (Silhouette, skipbar); Pause mit Esc
+
+**Stufe 6 — Atmosphäre, HUD, Export**
+- HUD: HP oben links, Wurfsterne oben rechts, Boss-Balken nur im Kampf
+- Düstere Palette, Parallax; Pixel-Art wo Assets da sind
+- HTML5/Web-Export; Playtest-Balancing
 
 ---
 
