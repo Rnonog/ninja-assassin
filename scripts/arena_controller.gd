@@ -112,7 +112,7 @@ func _on_enter(body: Node2D) -> void:
 	if _enter_grace > 0:
 		return
 	if body.is_in_group("player"):
-		lock_arena()
+		lock_arena.call_deferred()
 
 
 func _on_exit(body: Node2D) -> void:
@@ -160,9 +160,11 @@ func _set_wall_closed(wall: StaticBody2D, closed: bool) -> void:
 	# Keep shapes enabled; a CollisionShape2D that entered the tree disabled
 	# often never registers with the physics server when re-enabled.
 	var shape := _wall_shape(wall)
-	if shape:
-		shape.disabled = false
-	wall.collision_layer = 1 if closed else 0
+	if shape and shape.disabled:
+		shape.set_deferred("disabled", false)
+	var layer := 1 if closed else 0
+	if wall.collision_layer != layer:
+		wall.set_deferred("collision_layer", layer)
 	wall.visible = closed
 
 
