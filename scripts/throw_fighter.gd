@@ -8,9 +8,12 @@ const THROWER_PREFERRED_DISTANCE := 220.0
 const THROWER_DISTANCE_BAND := 40.0
 const THROWER_TELEGRAPH := 0.45
 const THROWER_THROW_RECOVERY := 0.6
-const COLOR_IDLE := Color(0.28, 0.32, 0.42, 1)
+const COLOR_IDLE := Color(0.32, 0.84, 0.92, 1)
+const COLOR_BAND := Color(0.95, 0.95, 0.98, 1)
+const COLOR_OUTLINE := Color(0.96, 0.95, 0.9, 1)
 const COLOR_TELEGRAPH := Color(0.92, 0.72, 0.12, 1)
 const COLOR_THROW := Color(0.78, 0.14, 0.12, 1)
+const OUTLINE_GROW := 4.0
 
 @export var auto_aggro: bool = true
 @export var facing: int = -1

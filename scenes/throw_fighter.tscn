@@ -19,12 +19,20 @@ facing = -1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_body")
 
+[node name="Outline" type="ColorRect" parent="."]
+offset_left = -16.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = 24.0
+color = Color(0.96, 0.95, 0.9, 1)
+mouse_filter = 2
+
 [node name="Body" type="ColorRect" parent="."]
 offset_left = -12.0
 offset_top = -20.0
 offset_right = 12.0
 offset_bottom = 20.0
-color = Color(0.28, 0.32, 0.42, 1)
+color = Color(0.32, 0.84, 0.92, 1)
 mouse_filter = 2
 
 [node name="Band" type="ColorRect" parent="."]
@@ -32,7 +40,7 @@ offset_left = -12.0
 offset_top = -8.0
 offset_right = 12.0
 offset_bottom = -2.0
-color = Color(0.45, 0.52, 0.7, 1)
+color = Color(0.95, 0.95, 0.98, 1)
 mouse_filter = 2
 
 [node name="Health" type="Node" parent="."]

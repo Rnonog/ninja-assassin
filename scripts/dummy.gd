@@ -10,9 +10,14 @@ const DUMMY_PAUSE := 0.8
 const HITBOX_SIZE := Vector2(56, 36)
 const HITBOX_FORWARD := 8.0
 
-const COLOR_IDLE := Color(0.42, 0.36, 0.28, 1)
+const COLOR_IDLE := Color(0.92, 0.74, 0.48, 1)
+const COLOR_BAND := Color(0.72, 0.42, 0.18, 1)
+const COLOR_OUTLINE := Color(0.96, 0.95, 0.9, 1)
 const COLOR_TELEGRAPH := Color(0.92, 0.72, 0.12, 1)
 const COLOR_SWIPE := Color(0.78, 0.14, 0.12, 1)
+const OUTLINE_GROW := 4.0
+const MIN_IDLE_LUMINANCE := 0.35
+const MIN_IDLE_COLOR_DISTANCE := 0.25
 
 @export var auto_loop: bool = true
 @export var facing: int = -1

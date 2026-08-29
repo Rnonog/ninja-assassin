@@ -68,6 +68,7 @@ func _run_all() -> void:
 	await _test_dead_enemy_stays_dead()
 	await _test_pickup_stays_gone()
 	_test_level_layout_order()
+	_test_placeholder_contrast()
 	_test_player_scene_art()
 	await _test_level_art()
 	_test_platforms_within_jump()
@@ -1122,4 +1123,133 @@ func _test_level_layout_order() -> void:
 		"p1=%s p2=%s p3=%s shrine=%s" % [p1.position.x, p2.position.x, p3.position.x, shrine.position.x]
 	)
 	main.free()
+
+
+func _luma(c: Color) -> float:
+	return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
+
+
+func _rgb_dist(a: Color, b: Color) -> float:
+	return Vector3(a.r, a.g, a.b).distance_to(Vector3(b.r, b.g, b.b))
+
+
+func _test_placeholder_contrast() -> void:
+	_check(
+		"dummy_idle_luminance",
+		_luma(DummyGD.COLOR_IDLE) >= DummyGD.MIN_IDLE_LUMINANCE,
+		"luma=%s" % _luma(DummyGD.COLOR_IDLE)
+	)
+	_check(
+		"thug_idle_luminance",
+		_luma(ClanThugGD.COLOR_IDLE) >= DummyGD.MIN_IDLE_LUMINANCE,
+		"luma=%s" % _luma(ClanThugGD.COLOR_IDLE)
+	)
+	_check(
+		"thrower_idle_luminance",
+		_luma(ThrowFighterGD.COLOR_IDLE) >= DummyGD.MIN_IDLE_LUMINANCE,
+		"luma=%s" % _luma(ThrowFighterGD.COLOR_IDLE)
+	)
+	_check(
+		"idle_dummy_thug_distinct",
+		_rgb_dist(DummyGD.COLOR_IDLE, ClanThugGD.COLOR_IDLE) >= DummyGD.MIN_IDLE_COLOR_DISTANCE,
+		"dist=%s" % _rgb_dist(DummyGD.COLOR_IDLE, ClanThugGD.COLOR_IDLE)
+	)
+	_check(
+		"idle_dummy_thrower_distinct",
+		_rgb_dist(DummyGD.COLOR_IDLE, ThrowFighterGD.COLOR_IDLE) >= DummyGD.MIN_IDLE_COLOR_DISTANCE,
+		"dist=%s" % _rgb_dist(DummyGD.COLOR_IDLE, ThrowFighterGD.COLOR_IDLE)
+	)
+	_check(
+		"idle_thug_thrower_distinct",
+		_rgb_dist(ClanThugGD.COLOR_IDLE, ThrowFighterGD.COLOR_IDLE) >= DummyGD.MIN_IDLE_COLOR_DISTANCE,
+		"dist=%s" % _rgb_dist(ClanThugGD.COLOR_IDLE, ThrowFighterGD.COLOR_IDLE)
+	)
+	_assert_placeholder_scene(
+		"dummy",
+		"res://scenes/dummy.tscn",
+		DummyGD.COLOR_IDLE,
+		DummyGD.COLOR_BAND,
+		DummyGD.COLOR_OUTLINE,
+		DummyGD.OUTLINE_GROW,
+		"BodyCollision/CollisionShape2D"
+	)
+	_assert_placeholder_scene(
+		"thug",
+		"res://scenes/clan_thug.tscn",
+		ClanThugGD.COLOR_IDLE,
+		ClanThugGD.COLOR_BAND,
+		ClanThugGD.COLOR_OUTLINE,
+		ClanThugGD.OUTLINE_GROW,
+		"CollisionShape2D"
+	)
+	_assert_placeholder_scene(
+		"thrower",
+		"res://scenes/throw_fighter.tscn",
+		ThrowFighterGD.COLOR_IDLE,
+		ThrowFighterGD.COLOR_BAND,
+		ThrowFighterGD.COLOR_OUTLINE,
+		ThrowFighterGD.OUTLINE_GROW,
+		"CollisionShape2D"
+	)
+
+
+func _assert_placeholder_scene(
+	prefix: String,
+	path: String,
+	idle: Color,
+	band: Color,
+	outline_color: Color,
+	grow: float,
+	collision_path: String
+) -> void:
+	var packed: PackedScene = load(path)
+	if packed == null:
+		_check("%s_placeholder_scene" % prefix, false, "failed to load %s" % path)
+		return
+	var node: Node = packed.instantiate()
+	var outline := node.get_node_or_null("Outline") as ColorRect
+	var body := node.get_node_or_null("Body") as ColorRect
+	var band_rect := node.get_node_or_null("Band") as ColorRect
+	var col := node.get_node_or_null(collision_path) as CollisionShape2D
+	if outline == null or body == null or band_rect == null:
+		_check("%s_placeholder_nodes" % prefix, false, "missing Outline/Body/Band")
+		node.free()
+		return
+	var outline_idx := outline.get_index()
+	var body_idx := body.get_index()
+	_check(
+		"%s_outline_behind_body" % prefix,
+		outline_idx < body_idx,
+		"outline_idx=%s body_idx=%s" % [outline_idx, body_idx]
+	)
+	_check(
+		"%s_idle_matches_const" % prefix,
+		body.color.is_equal_approx(idle),
+		"body=%s idle=%s" % [body.color, idle]
+	)
+	_check(
+		"%s_band_matches_const" % prefix,
+		band_rect.color.is_equal_approx(band),
+		"band=%s const=%s" % [band_rect.color, band]
+	)
+	_check(
+		"%s_outline_color" % prefix,
+		outline.color.is_equal_approx(outline_color),
+		"outline=%s const=%s" % [outline.color, outline_color]
+	)
+	var expected_outline := body.size + Vector2(grow * 2.0, grow * 2.0)
+	_check(
+		"%s_outline_grow" % prefix,
+		outline.size.is_equal_approx(expected_outline),
+		"outline.size=%s expected=%s" % [outline.size, expected_outline]
+	)
+	if col == null or col.shape == null or not (col.shape is RectangleShape2D):
+		_check("%s_collision_size" % prefix, false, "missing RectangleShape2D")
+	else:
+		_check(
+			"%s_collision_size" % prefix,
+			(col.shape as RectangleShape2D).size.is_equal_approx(PLAYER_COLLISION_SIZE),
+			"size=%s" % (col.shape as RectangleShape2D).size
+		)
+	node.free()
 
