@@ -1,7 +1,7 @@
 # mvp-wald
 
 **Typ:** Feature
-**Status:** in Umsetzung
+**Status:** erledigt
 **Worktree:** `task/mvp-wald` (Pfad `.worktrees/mvp-wald`)
 
 ## Ziel
@@ -58,7 +58,7 @@ Links-nach-rechts Level (Hafen-Tiles gestreckt): Einstieg Dummy → Kampfzone 1 
 | 1 | Steuerung & Greybox | `docs/plans/mvp-steuerung/` | erledigt |
 | 2 | Nahkampf & Leben | `docs/plans/mvp-nahkampf/` | erledigt |
 | 3 | Fernkampf & Gegner | `docs/plans/mvp-fernkampf/` | erledigt |
-| 4 | Level Nebliger Wald | `docs/plans/mvp-wald/` | in Umsetzung |
+| 4 | Level Nebliger Wald | `docs/plans/mvp-wald/` | erledigt |
 | 5 | Boss, Sieg, Intro | — | offen |
 | 6 | Atmosphäre, HUD, Export | — | offen |
 
