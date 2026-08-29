@@ -62,6 +62,12 @@ func _run_all() -> void:
 	await _test_dodge_blocks_thrower_projectile()
 	await _test_shuriken_interrupts_thrower_telegraph()
 	await _test_enemies_die_at_zero_hp()
+	await _test_checkpoint_stores_ammo()
+	await _test_death_before_checkpoint()
+	await _test_kill_plane_respawn()
+	await _test_dead_enemy_stays_dead()
+	await _test_pickup_stays_gone()
+	_test_level_layout_order()
 	_test_player_scene_art()
 	await _test_level_art()
 	_test_platforms_within_jump()
@@ -926,4 +932,194 @@ func _test_enemies_die_at_zero_hp() -> void:
 		"hp %s -> %s enemy_stars=%s" % [start_hp, player.health.current, _count_group(&"enemy_projectile")]
 	)
 	_teardown(world)
+
+
+func _attach_session(world: Node) -> Node:
+	var session: Node = (load("res://scripts/run_session.gd") as GDScript).new()
+	world.add_child(session)
+	return session
+
+
+func _wait_respawn() -> void:
+	await _step_physics(_frames_for(PlayerGD.DEATH_RELOAD_DELAY + 0.15))
+
+
+func _test_checkpoint_stores_ammo() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var shrine_packed: PackedScene = load("res://scenes/checkpoint.tscn")
+	var shrine = shrine_packed.instantiate()
+	shrine.position = Vector2(80, 158)
+	world.add_child(shrine)
+	_attach_session(world)
+	await _step_physics(4)
+	var stored: int = HealthGD.START_AMMO + HealthGD.AMMO_PICKUP
+	player.shuriken_ammo = stored
+	player.position = shrine.position
+	await _step_physics(6)
+	if not shrine.is_activated:
+		_check("checkpoint_stores_ammo", false, "shrine did not activate")
+		_teardown(world)
+		return
+	var id_before: int = player.get_instance_id()
+	player.health.take_damage(HealthGD.MAX_HP)
+	await _wait_respawn()
+	_check(
+		"checkpoint_stores_ammo",
+		player.get_instance_id() == id_before
+		and player.health.current == HealthGD.MAX_HP
+		and player.shuriken_ammo == stored
+		and is_equal_approx(player.global_position.x, shrine.global_position.x),
+		"hp=%s ammo=%s x=%s activated=%s" % [
+			player.health.current, player.shuriken_ammo, player.global_position.x, shrine.is_activated
+		]
+	)
+	_teardown(world)
+
+
+func _test_death_before_checkpoint() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var start := Vector2(0, 158)
+	var player = _spawn_combat_player(world, start)
+	_attach_session(world)
+	await _step_physics(4)
+	player.shuriken_ammo = HealthGD.START_AMMO + HealthGD.AMMO_PICKUP
+	var id_before: int = player.get_instance_id()
+	player.health.take_damage(HealthGD.MAX_HP)
+	await _wait_respawn()
+	_check(
+		"death_before_checkpoint",
+		player.get_instance_id() == id_before
+		and player.health.current == HealthGD.MAX_HP
+		and player.shuriken_ammo == HealthGD.START_AMMO
+		and is_equal_approx(player.global_position.x, start.x),
+		"hp=%s ammo=%s x=%s" % [player.health.current, player.shuriken_ammo, player.global_position.x]
+	)
+	_teardown(world)
+
+
+func _test_kill_plane_respawn() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var start := Vector2(0, 158)
+	var player = _spawn_combat_player(world, start)
+	var plane_packed: PackedScene = load("res://scenes/kill_plane.tscn")
+	var plane = plane_packed.instantiate()
+	plane.position = Vector2(0, 400)
+	world.add_child(plane)
+	_attach_session(world)
+	await _step_physics(4)
+	var id_before: int = player.get_instance_id()
+	player.position = plane.position
+	await _step_physics(6)
+	await _wait_respawn()
+	_check(
+		"kill_plane_respawn",
+		player.get_instance_id() == id_before
+		and not player.is_dead
+		and player.health.current == HealthGD.MAX_HP
+		and is_equal_approx(player.global_position.x, start.x),
+		"dead=%s hp=%s x=%s" % [player.is_dead, player.health.current, player.global_position.x]
+	)
+	_teardown(world)
+
+
+func _test_dead_enemy_stays_dead() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var thug = _spawn_combat_thug(world, Vector2(80, 158))
+	_attach_session(world)
+	await _step_physics(4)
+	thug.health.take_damage(HealthGD.THUG_MAX_HP)
+	await physics_frame
+	if not thug.is_dead:
+		_check("dead_enemy_stays_dead", false, "thug not dead before player death")
+		_teardown(world)
+		return
+	player.health.take_damage(HealthGD.MAX_HP)
+	await _wait_respawn()
+	var start_hp: int = player.health.current
+	thug.request_stab()
+	await _step_physics(_frames_for(ClanThugGD.THUG_TELEGRAPH + ClanThugGD.THUG_ACTIVE + 0.1))
+	_check(
+		"dead_enemy_stays_dead",
+		thug.is_dead and player.health.current == start_hp,
+		"thug_dead=%s hp %s -> %s" % [thug.is_dead, start_hp, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_pickup_stays_gone() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var pickup = _spawn_pickup_scene(world, Vector2(0, 158), "res://scenes/ammo_pickup.tscn")
+	_attach_session(world)
+	await _step_physics(8)
+	var pickup_gone_before_death := not is_instance_valid(pickup)
+	player.health.take_damage(HealthGD.MAX_HP)
+	await _wait_respawn()
+	_check(
+		"pickup_stays_gone",
+		pickup_gone_before_death and not is_instance_valid(pickup),
+		"gone_before=%s valid_after=%s ammo=%s" % [
+			pickup_gone_before_death, is_instance_valid(pickup), player.shuriken_ammo
+		]
+	)
+	_teardown(world)
+
+
+func _test_level_layout_order() -> void:
+	var packed: PackedScene = load("res://scenes/main.tscn")
+	if packed == null:
+		_check("level_layout_order", false, "failed to load main.tscn")
+		return
+	var main := packed.instantiate()
+	var dummy: Node2D = main.get_node("Dummy") as Node2D
+	var z1_thug: Node2D = main.get_node("Zone1Thug") as Node2D
+	var z1_thrower: Node2D = main.get_node("Zone1Thrower") as Node2D
+	var shrine: Node2D = main.get_node("Checkpoint") as Node2D
+	var z2_thug_a: Node2D = main.get_node("Zone2ThugA") as Node2D
+	var z2_thug_b: Node2D = main.get_node("Zone2ThugB") as Node2D
+	var z2_thrower: Node2D = main.get_node("Zone2Thrower") as Node2D
+	var arena: Node = main.get_node("Arena")
+	var exit_n: Node = main.get_node("Exit")
+	var level: Node = main.get_node("LevelGreybox")
+	var p1: Node2D = level.get_node("Platform1") as Node2D
+	var p2: Node2D = level.get_node("Platform2") as Node2D
+	var p3: Node2D = level.get_node("Platform3") as Node2D
+	_check("layout_dummy_x", absf(dummy.position.x - 300.0) <= 40.0, "dummy.x=%s" % dummy.position.x)
+	_check(
+		"layout_shrine_after_zone1",
+		shrine.position.x > z1_thug.position.x and shrine.position.x > z1_thrower.position.x,
+		"shrine=%s z1_thug=%s z1_thrower=%s" % [shrine.position.x, z1_thug.position.x, z1_thrower.position.x]
+	)
+	_check(
+		"layout_arena_after_zone2",
+		arena.position.x > z2_thug_a.position.x
+		and arena.position.x > z2_thug_b.position.x
+		and arena.position.x > z2_thrower.position.x,
+		"arena=%s" % arena.position.x
+	)
+	_check(
+		"layout_exit_after_arena",
+		exit_n.position.x > arena.position.x,
+		"exit=%s arena=%s" % [exit_n.position.x, arena.position.x]
+	)
+	_check(
+		"layout_platforms_after_shrine",
+		p1.position.x > shrine.position.x
+		and p2.position.x > shrine.position.x
+		and p3.position.x > shrine.position.x,
+		"p1=%s p2=%s p3=%s shrine=%s" % [p1.position.x, p2.position.x, p3.position.x, shrine.position.x]
+	)
+	main.free()
 

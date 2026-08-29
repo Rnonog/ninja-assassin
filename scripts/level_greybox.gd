@@ -1,12 +1,14 @@
 extends Node2D
 
 const SOURCE_ID := 0
-const FLOOR_COLS := 75
+const FLOOR_COLS := 141
 const FLOOR_ORIGIN := Vector2i(-7, 12)
+const PIT_COL_BEGIN := 52
+const PIT_COL_END := 64
 const PLATFORMS := [
-	{"origin": Vector2i(6, 10), "cols": 6, "atlas": Vector2i(2, 0)},
-	{"origin": Vector2i(16, 9), "cols": 5, "atlas": Vector2i(3, 0)},
-	{"origin": Vector2i(27, 9), "cols": 6, "atlas": Vector2i(2, 0)},
+	{"origin": Vector2i(44, 10), "cols": 6, "atlas": Vector2i(2, 0)},
+	{"origin": Vector2i(49, 9), "cols": 5, "atlas": Vector2i(3, 0)},
+	{"origin": Vector2i(54, 9), "cols": 6, "atlas": Vector2i(2, 0)},
 ]
 
 
@@ -24,6 +26,8 @@ func _ready() -> void:
 
 func _fill_floor(tiles: TileMapLayer) -> void:
 	for x in FLOOR_COLS:
+		if x >= PIT_COL_BEGIN and x <= PIT_COL_END:
+			continue
 		var deck := Vector2i(x % 2, 0)
 		var support := Vector2i(x % 2, 1)
 		tiles.set_cell(FLOOR_ORIGIN + Vector2i(x, 0), SOURCE_ID, deck)

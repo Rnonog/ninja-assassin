@@ -181,6 +181,24 @@ func heal(amount: int) -> void:
 	_update_hp_label(health.current)
 
 
+func respawn(world_position: Vector2, ammo: int) -> void:
+	is_dead = false
+	_reload_started = false
+	_cancel_attack()
+	_dodging = false
+	_dodge_timer = 0.0
+	velocity = Vector2.ZERO
+	global_position = world_position
+	if health:
+		health.restore_full()
+		_update_hp_label(health.current)
+	shuriken_ammo = clampi(ammo, 0, Health.MAX_AMMO)
+	_update_ammo_label()
+	_iframe_timer = IFRAME_DURATION
+	invulnerable = true
+	modulate = Color.WHITE
+
+
 func _can_combo_light() -> bool:
 	if not COMBO_ENABLED:
 		return false
@@ -400,6 +418,8 @@ func _on_died() -> void:
 	_cancel_attack()
 	invulnerable = true
 	velocity = Vector2.ZERO
+	if get_tree() != null and get_tree().get_first_node_in_group("run_session") != null:
+		return
 	if _reload_started:
 		return
 	_reload_started = true

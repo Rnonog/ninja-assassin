@@ -56,3 +56,7 @@ func heal(amount: int) -> int:
 		return 0
 	current += applied
 	return applied
+
+
+func restore_full() -> void:
+	current = max_hp

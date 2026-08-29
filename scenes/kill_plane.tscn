@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/kill_plane.gd" id="1_kp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plane"]
+size = Vector2(500, 200)
+
+[node name="KillPlane" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+script = ExtResource("1_kp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_plane")

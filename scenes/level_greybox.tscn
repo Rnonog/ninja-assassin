@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/level_greybox.gd" id="1_level"]
 [ext_resource type="Texture2D" path="res://assets/tiles/pier.png" id="2_tiles"]
@@ -22,7 +22,10 @@ tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_pier")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(2400, 64)
+size = Vector2(1640, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_after"]
+size = Vector2(2440, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat1"]
 size = Vector2(176, 32)
@@ -65,25 +68,31 @@ position = Vector2(24, 16)
 tile_set = SubResource("TileSet_pier")
 
 [node name="Floor" type="StaticBody2D" parent="."]
-position = Vector2(1000, 432)
+position = Vector2(620, 432)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
 shape = SubResource("RectangleShape2D_floor")
 
+[node name="FloorAfterPit" type="StaticBody2D" parent="."]
+position = Vector2(3080, 432)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorAfterPit"]
+shape = SubResource("RectangleShape2D_floor_after")
+
 [node name="Platform1" type="StaticBody2D" parent="."]
-position = Vector2(320, 356)
+position = Vector2(1520, 356)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
 shape = SubResource("RectangleShape2D_plat1")
 
 [node name="Platform2" type="StaticBody2D" parent="."]
-position = Vector2(620, 336)
+position = Vector2(1680, 336)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
 shape = SubResource("RectangleShape2D_plat2")
 
 [node name="Platform3" type="StaticBody2D" parent="."]
-position = Vector2(980, 326)
+position = Vector2(1840, 326)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
 shape = SubResource("RectangleShape2D_plat3")

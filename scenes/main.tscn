@@ -1,31 +1,69 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=11 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/level_greybox.tscn" id="1_level"]
-[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://scenes/dummy.tscn" id="3_dummy"]
-[ext_resource type="PackedScene" path="res://scenes/clan_thug.tscn" id="4_thug"]
-[ext_resource type="PackedScene" path="res://scenes/throw_fighter.tscn" id="5_thrower"]
-[ext_resource type="PackedScene" path="res://scenes/ammo_pickup.tscn" id="6_ammo"]
-[ext_resource type="PackedScene" path="res://scenes/heal_pickup.tscn" id="7_heal"]
+[ext_resource type="Script" path="res://scripts/run_session.gd" id="1_session"]
+[ext_resource type="PackedScene" path="res://scenes/level_greybox.tscn" id="2_level"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/dummy.tscn" id="4_dummy"]
+[ext_resource type="PackedScene" path="res://scenes/clan_thug.tscn" id="5_thug"]
+[ext_resource type="PackedScene" path="res://scenes/throw_fighter.tscn" id="6_thrower"]
+[ext_resource type="PackedScene" path="res://scenes/ammo_pickup.tscn" id="7_ammo"]
+[ext_resource type="PackedScene" path="res://scenes/heal_pickup.tscn" id="8_heal"]
+[ext_resource type="PackedScene" path="res://scenes/checkpoint.tscn" id="9_shrine"]
+[ext_resource type="PackedScene" path="res://scenes/kill_plane.tscn" id="10_plane"]
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_session")
 
-[node name="LevelGreybox" parent="." instance=ExtResource("1_level")]
+[node name="LevelGreybox" parent="." instance=ExtResource("2_level")]
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
+[node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector2(160, 368)
 
-[node name="Dummy" parent="." instance=ExtResource("3_dummy")]
+[node name="Dummy" parent="." instance=ExtResource("4_dummy")]
 position = Vector2(300, 380)
 
-[node name="AmmoPickup" parent="." instance=ExtResource("6_ammo")]
-position = Vector2(480, 392)
+[node name="Zone1Ammo" parent="." instance=ExtResource("7_ammo")]
+position = Vector2(550, 392)
 
-[node name="ClanThug" parent="." instance=ExtResource("4_thug")]
-position = Vector2(720, 380)
+[node name="Zone1Thug" parent="." instance=ExtResource("5_thug")]
+position = Vector2(700, 380)
 
-[node name="HealPickup" parent="." instance=ExtResource("7_heal")]
-position = Vector2(900, 392)
+[node name="Zone1Thrower" parent="." instance=ExtResource("6_thrower")]
+position = Vector2(1000, 380)
 
-[node name="ThrowFighter" parent="." instance=ExtResource("5_thrower")]
-position = Vector2(1100, 380)
+[node name="Checkpoint" parent="." instance=ExtResource("9_shrine")]
+position = Vector2(1200, 372)
+
+[node name="KillPlane" parent="." instance=ExtResource("10_plane")]
+position = Vector2(1650, 560)
+
+[node name="Zone2ThugA" parent="." instance=ExtResource("5_thug")]
+position = Vector2(2100, 380)
+
+[node name="Zone2ThugB" parent="." instance=ExtResource("5_thug")]
+position = Vector2(2300, 380)
+
+[node name="Zone2Thrower" parent="." instance=ExtResource("6_thrower")]
+position = Vector2(2600, 380)
+
+[node name="SupplyHeal" parent="." instance=ExtResource("8_heal")]
+position = Vector2(2900, 392)
+
+[node name="SupplyAmmo" parent="." instance=ExtResource("7_ammo")]
+position = Vector2(3050, 392)
+
+[node name="Arena" type="ColorRect" parent="."]
+offset_left = 3480.0
+offset_top = 360.0
+offset_right = 3520.0
+offset_bottom = 400.0
+color = Color(0.35, 0.22, 0.22, 0.55)
+mouse_filter = 2
+
+[node name="Exit" type="ColorRect" parent="."]
+offset_left = 3980.0
+offset_top = 340.0
+offset_right = 4020.0
+offset_bottom = 400.0
+color = Color(0.55, 0.48, 0.28, 0.7)
+mouse_filter = 2
