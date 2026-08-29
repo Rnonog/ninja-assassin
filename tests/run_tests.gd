@@ -5,6 +5,8 @@ const DummyGD := preload("res://scripts/dummy.gd")
 const HealthGD := preload("res://scripts/health.gd")
 const ClanThugGD := preload("res://scripts/clan_thug.gd")
 const ThrowFighterGD := preload("res://scripts/throw_fighter.gd")
+const ClanCaptainGD := preload("res://scripts/clan_captain.gd")
+const ArenaControllerGD := preload("res://scripts/arena_controller.gd")
 
 const ACTIONS := [
 	"move_left",
@@ -69,6 +71,14 @@ func _run_all() -> void:
 	await _test_pickup_stays_gone()
 	_test_level_layout_order()
 	_test_placeholder_contrast()
+	await _test_second_shrine_overrides_spawn()
+	await _test_arena_lock_blocks_left()
+	await _test_stomp_hits_player()
+	await _test_dodge_blocks_stomp()
+	await _test_exit_without_boss_dead_no_win()
+	await _test_boss_dead_opens_right_wall()
+	await _test_victory_on_exit_after_boss()
+	await _test_death_resets_live_boss()
 	_test_player_scene_art()
 	await _test_level_art()
 	_test_platforms_within_jump()
@@ -1088,9 +1098,11 @@ func _test_level_layout_order() -> void:
 	var z1_thug: Node2D = main.get_node("Zone1Thug") as Node2D
 	var z1_thrower: Node2D = main.get_node("Zone1Thrower") as Node2D
 	var shrine: Node2D = main.get_node("Checkpoint") as Node2D
+	var shrine2: Node2D = main.get_node("Checkpoint2") as Node2D
 	var z2_thug_a: Node2D = main.get_node("Zone2ThugA") as Node2D
 	var z2_thug_b: Node2D = main.get_node("Zone2ThugB") as Node2D
 	var z2_thrower: Node2D = main.get_node("Zone2Thrower") as Node2D
+	var supply: Node2D = main.get_node("SupplyAmmo") as Node2D
 	var arena: Node = main.get_node("Arena")
 	var exit_n: Node = main.get_node("Exit")
 	var level: Node = main.get_node("LevelGreybox")
@@ -1109,6 +1121,11 @@ func _test_level_layout_order() -> void:
 		and arena.position.x > z2_thug_b.position.x
 		and arena.position.x > z2_thrower.position.x,
 		"arena=%s" % arena.position.x
+	)
+	_check(
+		"layout_shrine2_before_arena",
+		shrine2.position.x > supply.position.x and shrine2.position.x < arena.position.x,
+		"shrine2=%s supply=%s arena=%s" % [shrine2.position.x, supply.position.x, arena.position.x]
 	)
 	_check(
 		"layout_exit_after_arena",
@@ -1191,6 +1208,16 @@ func _test_placeholder_contrast() -> void:
 		ThrowFighterGD.OUTLINE_GROW,
 		"CollisionShape2D"
 	)
+	_assert_placeholder_scene(
+		"captain",
+		"res://scenes/clan_captain.tscn",
+		ClanCaptainGD.COLOR_IDLE,
+		ClanCaptainGD.COLOR_BAND,
+		ClanCaptainGD.COLOR_OUTLINE,
+		ClanCaptainGD.OUTLINE_GROW,
+		"CollisionShape2D",
+		ClanCaptainGD.BODY_SIZE
+	)
 
 
 func _assert_placeholder_scene(
@@ -1200,7 +1227,8 @@ func _assert_placeholder_scene(
 	band: Color,
 	outline_color: Color,
 	grow: float,
-	collision_path: String
+	collision_path: String,
+	collision_size: Vector2 = PLAYER_COLLISION_SIZE
 ) -> void:
 	var packed: PackedScene = load(path)
 	if packed == null:
@@ -1248,8 +1276,368 @@ func _assert_placeholder_scene(
 	else:
 		_check(
 			"%s_collision_size" % prefix,
-			(col.shape as RectangleShape2D).size.is_equal_approx(PLAYER_COLLISION_SIZE),
+			(col.shape as RectangleShape2D).size.is_equal_approx(collision_size),
 			"size=%s" % (col.shape as RectangleShape2D).size
 		)
 	node.free()
+
+
+func _spawn_combat_captain(world: Node, pos: Vector2):
+	var packed: PackedScene = load("res://scenes/clan_captain.tscn")
+	var captain = packed.instantiate()
+	captain.auto_aggro = false
+	captain.name = "Captain"
+	captain.position = pos
+	world.add_child(captain)
+	return captain
+
+
+func _make_wall(world: Node, pos: Vector2, wall_name: String) -> StaticBody2D:
+	var wall := StaticBody2D.new()
+	wall.name = wall_name
+	wall.position = pos
+	wall.collision_layer = 0
+	wall.collision_mask = 0
+	var shape_node := CollisionShape2D.new()
+	shape_node.name = "CollisionShape2D"
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(40, 180)
+	shape_node.shape = rect
+	shape_node.disabled = false
+	world.add_child(wall)
+	wall.add_child(shape_node)
+	if wall_name == "LeftWall":
+		wall.add_to_group("arena_left_wall")
+	else:
+		wall.add_to_group("arena_right_wall")
+	return wall
+
+
+func _make_player_area(world: Node, pos: Vector2, name_hint: String) -> Area2D:
+	var area := Area2D.new()
+	area.name = name_hint
+	area.position = pos
+	area.collision_layer = 0
+	area.collision_mask = 2
+	area.monitoring = true
+	area.monitorable = false
+	var shape_node := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(48, 80)
+	shape_node.shape = rect
+	area.add_child(shape_node)
+	world.add_child(area)
+	return area
+
+
+func _make_arena(
+	world: Node,
+	captain: Node,
+	enter: Area2D,
+	exit_area: Area2D,
+	left_wall: StaticBody2D,
+	right_wall: StaticBody2D
+) -> ArenaController:
+	var overlay = (load("res://scenes/outcome_overlay.tscn") as PackedScene).instantiate()
+	overlay.name = "OutcomeOverlay"
+	world.add_child(overlay)
+	var hp_bar = (load("res://scenes/boss_hp_bar.tscn") as PackedScene).instantiate()
+	hp_bar.name = "BossHpBar"
+	world.add_child(hp_bar)
+	var arena: ArenaController = ArenaControllerGD.new()
+	world.add_child(arena)
+	arena.name = "ArenaController"
+	arena.boss_path = NodePath("../%s" % captain.name)
+	arena.enter_path = NodePath("../%s" % enter.name)
+	arena.exit_path = NodePath("../%s" % exit_area.name)
+	arena.left_wall_path = NodePath("../%s" % left_wall.name)
+	arena.right_wall_path = NodePath("../%s" % right_wall.name)
+	arena.overlay_path = NodePath("../OutcomeOverlay")
+	arena.hp_bar_path = NodePath("../BossHpBar")
+	return arena
+
+
+func _overlay_label(world: Node) -> Label:
+	var overlay := world.get_node_or_null("OutcomeOverlay")
+	if overlay == null:
+		return null
+	return overlay.get_node_or_null("Label") as Label
+
+
+func _hp_bar_visible(world: Node) -> bool:
+	var bar := world.get_node_or_null("BossHpBar") as CanvasLayer
+	return bar != null and bar.visible
+
+
+func _test_second_shrine_overrides_spawn() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var shrine_packed: PackedScene = load("res://scenes/checkpoint.tscn")
+	var shrine1 = shrine_packed.instantiate()
+	shrine1.position = Vector2(40, 158)
+	world.add_child(shrine1)
+	var shrine2 = shrine_packed.instantiate()
+	shrine2.position = Vector2(160, 158)
+	world.add_child(shrine2)
+	_attach_session(world)
+	await _step_physics(4)
+	player.shuriken_ammo = HealthGD.START_AMMO + HealthGD.AMMO_PICKUP
+	player.position = shrine1.position
+	await _step_physics(6)
+	var second_ammo: int = mini(HealthGD.START_AMMO + HealthGD.AMMO_PICKUP * 2, HealthGD.MAX_AMMO)
+	player.shuriken_ammo = second_ammo
+	player.position = shrine2.position
+	await _step_physics(6)
+	if not shrine2.is_activated:
+		_check("second_shrine_overrides_spawn", false, "shrine2 did not activate")
+		_teardown(world)
+		return
+	player.health.take_damage(HealthGD.MAX_HP)
+	await _wait_respawn()
+	_check(
+		"second_shrine_overrides_spawn",
+		player.shuriken_ammo == second_ammo
+		and is_equal_approx(player.global_position.x, shrine2.global_position.x),
+		"ammo=%s x=%s" % [player.shuriken_ammo, player.global_position.x]
+	)
+	_teardown(world)
+
+
+func _test_arena_lock_blocks_left() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(220, 158))
+	var captain = _spawn_combat_captain(world, Vector2(400, 158))
+	var enter := _make_player_area(world, Vector2(220, 158), "Arena")
+	var exit_area := _make_player_area(world, Vector2(700, 158), "Exit")
+	var left_wall := _make_wall(world, Vector2(80, 160), "LeftWall")
+	var right_wall := _make_wall(world, Vector2(640, 160), "RightWall")
+	_make_arena(world, captain, enter, exit_area, left_wall, right_wall)
+	await _step_physics(6)
+	var arena := world.get_node("ArenaController") as ArenaController
+	if arena == null:
+		_check("arena_lock_blocks_left", false, "missing ArenaController")
+		_teardown(world)
+		return
+	if not arena.is_locked or not arena.is_left_wall_closed() or not arena.is_right_wall_closed():
+		_check(
+			"arena_lock_blocks_left",
+			false,
+			"enter did not lock locked=%s left=%s right=%s" % [
+				arena.is_locked,
+				arena.is_left_wall_closed(),
+				arena.is_right_wall_closed(),
+			]
+		)
+		_teardown(world)
+		return
+	if not _hp_bar_visible(world):
+		_check("arena_lock_blocks_left", false, "hp bar hidden after lock")
+		_teardown(world)
+		return
+	player.set_move_axis(-1.0)
+	await _step_physics(80)
+	_check(
+		"arena_lock_blocks_left",
+		player.global_position.x > 105.0 and arena.is_left_wall_closed(),
+		"x=%s left_closed=%s layer=%s" % [
+			player.global_position.x,
+			arena.is_left_wall_closed(),
+			left_wall.collision_layer,
+		]
+	)
+	_teardown(world)
+
+
+func _test_stomp_hits_player() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var captain = _spawn_combat_captain(world, Vector2(40, 158))
+	await _step_physics(4)
+	var start_hp: int = player.health.current
+	captain.request_stomp()
+	await _step_physics(_frames_for(ClanCaptainGD.STOMP_TELEGRAPH + ClanCaptainGD.STOMP_ACTIVE))
+	_check(
+		"stomp_hits_player",
+		player.health.current == start_hp - HealthGD.BOSS_STOMP_DAMAGE,
+		"hp %s -> %s" % [start_hp, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_dodge_blocks_stomp() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(0, 158))
+	var captain = _spawn_combat_captain(world, Vector2(40, 158))
+	await _step_physics(4)
+	var start_hp: int = player.health.current
+	captain.request_stomp()
+	var telegraph_frames := maxi(
+		int(floor(ClanCaptainGD.STOMP_TELEGRAPH * float(Engine.physics_ticks_per_second))) - 1, 1
+	)
+	await _step_physics(telegraph_frames)
+	player.request_dodge()
+	await _step_physics(_frames_for(ClanCaptainGD.STOMP_ACTIVE + 0.05))
+	_check(
+		"dodge_blocks_stomp",
+		player.health.current == start_hp,
+		"hp %s -> %s" % [start_hp, player.health.current]
+	)
+	_teardown(world)
+
+
+func _test_exit_without_boss_dead_no_win() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(80, 158))
+	var captain = _spawn_combat_captain(world, Vector2(200, 158))
+	var enter := _make_player_area(world, Vector2(-80, 158), "Arena")
+	var exit_area := _make_player_area(world, Vector2(80, 158), "Exit")
+	var left_wall := _make_wall(world, Vector2(-40, 160), "LeftWall")
+	var right_wall := _make_wall(world, Vector2(320, 160), "RightWall")
+	var arena := _make_arena(world, captain, enter, exit_area, left_wall, right_wall)
+	await _step_physics(8)
+	_check(
+		"exit_without_boss_dead_no_win",
+		not arena.is_won and not captain.is_dead,
+		"won=%s dead=%s" % [arena.is_won, captain.is_dead]
+	)
+	_teardown(world)
+
+
+func _test_boss_dead_opens_right_wall() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(200, 158))
+	var captain = _spawn_combat_captain(world, Vector2(280, 158))
+	var enter := _make_player_area(world, Vector2(200, 158), "Arena")
+	var exit_area := _make_player_area(world, Vector2(700, 158), "Exit")
+	var left_wall := _make_wall(world, Vector2(80, 160), "LeftWall")
+	var right_wall := _make_wall(world, Vector2(640, 160), "RightWall")
+	var arena := _make_arena(world, captain, enter, exit_area, left_wall, right_wall)
+	await _step_physics(6)
+	if not arena.is_locked:
+		_check("boss_dead_opens_right_wall", false, "enter did not lock")
+		_teardown(world)
+		return
+	captain.health.take_damage(HealthGD.BOSS_MAX_HP)
+	await physics_frame
+	_check(
+		"boss_dead_opens_right_wall",
+		captain.is_dead
+		and not arena.is_right_wall_closed()
+		and arena.is_left_wall_closed()
+		and not _hp_bar_visible(world),
+		"dead=%s right=%s left=%s bar=%s" % [
+			captain.is_dead,
+			arena.is_right_wall_closed(),
+			arena.is_left_wall_closed(),
+			_hp_bar_visible(world),
+		]
+	)
+	_teardown(world)
+
+
+func _test_victory_on_exit_after_boss() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var player = _spawn_combat_player(world, Vector2(80, 158))
+	var captain = _spawn_combat_captain(world, Vector2(200, 158))
+	var enter := _make_player_area(world, Vector2(-80, 158), "Arena")
+	var exit_area := _make_player_area(world, Vector2(400, 158), "Exit")
+	var left_wall := _make_wall(world, Vector2(-40, 160), "LeftWall")
+	var right_wall := _make_wall(world, Vector2(320, 160), "RightWall")
+	var arena := _make_arena(world, captain, enter, exit_area, left_wall, right_wall)
+	await _step_physics(6)
+	captain.health.take_damage(HealthGD.BOSS_MAX_HP)
+	await physics_frame
+	var id_before: int = player.get_instance_id()
+	player.position = exit_area.position
+	await _step_physics(8)
+	var label := _overlay_label(world)
+	_check(
+		"victory_on_exit_after_boss",
+		arena.is_won
+		and player.get_instance_id() == id_before
+		and player.control_locked
+		and label != null
+		and label.text == "Sieg",
+		"won=%s locked=%s overlay=%s" % [
+			arena.is_won,
+			player.control_locked,
+			label.text if label else "",
+		]
+	)
+	_teardown(world)
+
+
+func _test_death_resets_live_boss() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	_spawn_floor(world, FLOOR_POS, FLOOR_SIZE)
+	var shrine_pos := Vector2(0, 158)
+	var player = _spawn_combat_player(world, shrine_pos)
+	var shrine = (load("res://scenes/checkpoint.tscn") as PackedScene).instantiate()
+	shrine.position = shrine_pos
+	world.add_child(shrine)
+	var captain = _spawn_combat_captain(world, Vector2(200, 158))
+	var enter := _make_player_area(world, Vector2(80, 158), "Arena")
+	var exit_area := _make_player_area(world, Vector2(700, 158), "Exit")
+	var left_wall := _make_wall(world, Vector2(40, 160), "LeftWall")
+	var right_wall := _make_wall(world, Vector2(640, 160), "RightWall")
+	var arena := _make_arena(world, captain, enter, exit_area, left_wall, right_wall)
+	_attach_session(world)
+	await _step_physics(6)
+	if not shrine.is_activated:
+		_check("death_resets_live_boss", false, "shrine did not activate")
+		_teardown(world)
+		return
+	player.position = enter.position
+	await _step_physics(6)
+	captain.health.take_damage(HealthGD.BOSS_STOMP_DAMAGE)
+	var wounded: int = captain.health.current
+	player.health.take_damage(HealthGD.MAX_HP)
+	await physics_frame
+	var defeat_label := _overlay_label(world)
+	if defeat_label == null or defeat_label.text != "Niederlage":
+		_check(
+			"death_resets_live_boss",
+			false,
+			"overlay=%s" % (defeat_label.text if defeat_label else "")
+		)
+		_teardown(world)
+		return
+	await _wait_respawn()
+	var after_label := _overlay_label(world)
+	_check(
+		"death_resets_live_boss",
+		wounded < HealthGD.BOSS_MAX_HP
+		and captain.health.current == HealthGD.BOSS_MAX_HP
+		and not arena.is_left_wall_closed()
+		and not arena.is_right_wall_closed()
+		and not captain.is_dead
+		and not _hp_bar_visible(world)
+		and after_label != null
+		and after_label.text == ""
+		and is_equal_approx(player.global_position.x, shrine.global_position.x),
+		"wounded=%s hp=%s left=%s right=%s x=%s overlay=%s" % [
+			wounded,
+			captain.health.current,
+			arena.is_left_wall_closed(),
+			arena.is_right_wall_closed(),
+			player.global_position.x,
+			after_label.text if after_label else "",
+		]
+	)
+	_teardown(world)
 

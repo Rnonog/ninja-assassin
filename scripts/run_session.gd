@@ -1,6 +1,8 @@
 class_name RunSession
 extends Node
 
+signal respawned
+
 var spawn_position: Vector2 = Vector2.ZERO
 var spawn_ammo: int = Health.START_AMMO
 
@@ -20,9 +22,9 @@ func _bind() -> void:
 		spawn_ammo = Health.START_AMMO
 		if _player.health and not _player.health.died.is_connected(_on_player_died):
 			_player.health.died.connect(_on_player_died)
-	var shrine := get_tree().get_first_node_in_group("checkpoint")
-	if shrine and shrine.has_signal("activated") and not shrine.activated.is_connected(_on_checkpoint):
-		shrine.activated.connect(_on_checkpoint)
+	for shrine in get_tree().get_nodes_in_group("checkpoint"):
+		if shrine.has_signal("activated") and not shrine.activated.is_connected(_on_checkpoint):
+			shrine.activated.connect(_on_checkpoint)
 	var plane := get_tree().get_first_node_in_group("kill_plane")
 	if plane and plane.has_signal("player_fell") and not plane.player_fell.is_connected(_on_kill_plane):
 		plane.player_fell.connect(_on_kill_plane)
@@ -59,3 +61,4 @@ func _do_respawn() -> void:
 	if _player == null:
 		return
 	_player.respawn(spawn_position, spawn_ammo)
+	respawned.emit()

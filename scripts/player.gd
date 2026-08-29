@@ -31,6 +31,7 @@ enum AttackKind { NONE, LIGHT, HEAVY }
 enum AttackPhase { IDLE, WINDUP, ACTIVE, RECOVERY }
 
 var invulnerable: bool = false
+var control_locked: bool = false
 var facing: int = 1
 var move_axis_override: Variant = null
 var is_dead: bool = false
@@ -181,8 +182,16 @@ func heal(amount: int) -> void:
 	_update_hp_label(health.current)
 
 
+func set_control_locked(on: bool) -> void:
+	control_locked = on
+	if on:
+		velocity = Vector2.ZERO
+		_cancel_attack()
+
+
 func respawn(world_position: Vector2, ammo: int) -> void:
 	is_dead = false
+	control_locked = false
 	_reload_started = false
 	_cancel_attack()
 	_dodging = false
@@ -322,7 +331,7 @@ func _try_consume_jump() -> void:
 func _physics_process(delta: float) -> void:
 	_jumped_this_frame = false
 
-	if not is_dead:
+	if not is_dead and not control_locked:
 		if Input.is_action_just_pressed("jump"):
 			request_jump()
 		if Input.is_action_just_released("jump"):
@@ -349,7 +358,7 @@ func _physics_process(delta: float) -> void:
 
 	_tick_attack(delta)
 
-	if is_dead:
+	if is_dead or control_locked:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		_update_animation()

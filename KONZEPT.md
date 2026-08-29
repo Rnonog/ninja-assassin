@@ -462,7 +462,7 @@ Jeder Endboss ist **deutlich stärker** als der vorherige — mehr Leben, mehr A
 | **2** | Nahkampf & Leben | **erledigt** | Mit Katana treffen und sterben | Leicht/schwer unterscheidbar; Tod bei 0 HP |
 | **3** | Fernkampf & Gegner | **erledigt** | Wurfsterne + Schläger + Wurfkämpfer | Munition begrenzt; beide Muster lesbar |
 | **4** | Level *Nebliger Wald* | **erledigt** | Von links nach rechts bis zur Arena | 1 Checkpoint, Respawn, 5–10 Min. |
-| **5** | Boss, Sieg, Intro | offen | Hauptmann besiegen, Intro skippen | Spielschleife geschlossen |
+| **5** | Boss, Sieg, Intro | **in Umsetzung** | Hauptmann besiegen, Intro skippen | Spielschleife geschlossen |
 | **6** | Atmosphäre, HUD, Export | offen | Düsteres Level im Browser | Alle Punkte aus §11.3 abgehakt |
 
 **Stufe 1 — Steuerung & Greybox**
